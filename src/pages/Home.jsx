@@ -13,6 +13,29 @@ import Footer from "../components/Footer";
 const MotionButton = motion(Button);
 
 const Home = () => {
+
+    React.useEffect(() => {
+            if(localStorage.getItem("token")) {
+                fetch("http://194.102.62.226:5000/tokenLogin", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        accessToken: localStorage.getItem("token"),
+                        email: localStorage.getItem("email")
+                    }),
+                }
+                    ).then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            return window.location.href = "/create-event";
+                        }
+                    })
+                    .catch((error) => console.error(error))
+            }
+        }, []);
+
     return (
         <Box
             sx={{

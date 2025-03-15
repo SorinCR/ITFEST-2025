@@ -125,15 +125,67 @@ export default function SignUp(props) {
             return;
         }
         const data = new FormData(event.currentTarget);
-        console.log({
-            firstName: data.get('firstName'),
-            lastName: data.get('lastName'),
-            email: data.get('email'),
-            password: data.get('password'),
-            passwordConfirm: data.get('passwordConfirm'),
-            company: isCompany ? data.get('company') : null,
-        });
+
+        fetch("http://194.102.62.226:5000/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                fname: data.get('firstName'),
+                lname: data.get('lastName'),
+                email: data.get('email'),
+                password: data.get('password'),
+                userType: isCompany ? "company" : "individual",
+                company: isCompany ? data.get('company') : "",
+            }),
+        }).then((response) => response.json())
+            .then((d) => {
+                console.log(d);
+                if (d.success) {
+                    localStorage.setItem("token", d.accessToken);
+                    localStorage.setItem("email", data.get('email'));
+                    // setTimeout(() => {
+                    //     window.location.href = "/create-event";
+                    // },1000)
+                    window.location.href = "/create-event";
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch((error) => console.error(error));
+
+        // console.log({
+        //     firstName: data.get('firstName'),
+        //     lastName: data.get('lastName'),
+        //     email: data.get('email'),
+        //     password: data.get('password'),
+        //     passwordConfirm: data.get('passwordConfirm'),
+        //     company: isCompany ? data.get('company') : "",
+        // });
     };
+
+    React.useEffect(() => {
+                if(localStorage.getItem("token")) {
+                    fetch("http://194.102.62.226:5000/tokenLogin", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            accessToken: localStorage.getItem("token"),
+                            email: localStorage.getItem("email")
+                        }),
+                    }
+                        ).then((response) => response.json())
+                        .then((data) => {
+                            if (data.success) {
+                                return window.location.href = "/create-event";
+                            }
+                        })
+                        .catch((error) => console.error(error))
+                }
+            }, []);
 
     return (
         <AppTheme {...props}>
@@ -282,7 +334,7 @@ export default function SignUp(props) {
                         <Typography sx={{ textAlign: 'center' }}>
                             Already have an account?{' '}
                             <Link
-                                href="/material-ui/getting-started/templates/sign-in/"
+                                href="/login"
                                 variant="body2"
                                 sx={{ alignSelf: 'center' }}
                             >

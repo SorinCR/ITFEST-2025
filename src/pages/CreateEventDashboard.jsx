@@ -24,11 +24,39 @@ const xThemeComponents = {
 };
 
 export default function Dashboard(props) {
+
+    const [userData, setUserData] = React.useState({});
+
+    React.useEffect(() => {
+        if(!localStorage.getItem("token")) {
+            return window.location.href = "/login";
+        }
+        fetch("http://194.102.62.226:5000/tokenLogin", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                accessToken: localStorage.getItem("token"),
+                email: localStorage.getItem("email")
+            }),
+        }
+            ).then((response) => response.json())
+            .then((data) => {
+                if (!data.success) {
+                    return window.location.href = "/login";
+                }
+                setUserData(data.user);
+                console.log(data);
+            })
+            .catch((error) => console.error(error))
+    }, []);
+
     return (
         <AppTheme {...props} themeComponents={xThemeComponents}>
             <CssBaseline enableColorScheme />
             <Box sx={{ display: 'flex' }}>
-                <SideMenu />
+                <SideMenu userData={userData}/>
                 <AppNavbar />
                 {/* Main content */}
                 <Box

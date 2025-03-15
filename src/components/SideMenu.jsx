@@ -24,7 +24,8 @@ const Drawer = styled(MuiDrawer)({
     },
 });
 
-export default function SideMenu() {
+export default function SideMenu({userData}) {
+    console.log(userData)
     return (
         <Drawer
             variant="permanent"
@@ -68,16 +69,16 @@ export default function SideMenu() {
             >
                 <Avatar
                     sizes="small"
-                    alt="Riley Carter"
+                    alt=                        {userData.userType == "company" ? userData.company : `${userData.fname} ${userData.lname}`}
                     src="/static/images/avatar/7.jpg"
                     sx={{ width: 36, height: 36 }}
                 />
                 <Box sx={{ mr: 'auto' }}>
                     <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-                        Riley Carter
+                        {userData.userType == "company" ? userData.company : `${userData.fname} ${userData.lname}`}
                     </Typography>
                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                        riley@email.com
+                        {userData.plan == 0 ? "Free Plan" : "Enterprise Plan"}
                     </Typography>
                 </Box>
                 <OptionsMenu />

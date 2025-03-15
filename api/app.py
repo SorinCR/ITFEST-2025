@@ -32,6 +32,7 @@ class User(db.Document):
     email = db.StringField()
     userType = db.StringField()
     company = db.StringField()
+    plan = db.IntField()
     password = db.StringField()
     accessToken = db.StringField()
     events = db.ListField()
@@ -75,12 +76,12 @@ def register():
     received_password = bytes(data['password'], 'UTF-8')
 
     encoded_jwt = jwt.encode(
-        {"fname": data['fname'], "lname": data["lname"], "email": data['email'], "userType": data['userType'], "company": data["company"]}, secret, algorithm="HS256")
+        {"fname": data['fname'], "lname": data["lname"], "email": data['email'], "userType": data['userType'], "company": data["company"], "plan": 0}, secret, algorithm="HS256")
 
     hashed_password = bcrypt.hashpw(received_password, bcrypt.gensalt())
 
     User(fname=data['fname'], lname=data['lname'], email=data['email'],
-         userType=data["userType"], company=data["company"], password=hashed_password, accessToken=encoded_jwt).save()
+         userType=data["userType"], company=data["company"], plan=0, password=hashed_password, accessToken=encoded_jwt).save()
     return {"success": True, 'accessToken': encoded_jwt}
 
 @app.route('/login', methods=['POST'])
@@ -91,9 +92,22 @@ def login():
     except:
         return {"success": False, "message": "This e-mail doesn't exist."}
     if bcrypt.checkpw(data['password'].encode('utf-8'), user['password'].encode('utf-8')):
-        return {"success": True, "accessToken": user['accessToken'], "fname": user['fname'], "lname": user["lname"], "email": user['email'], "userType": user['userType'], "company": user["company"]}
+        return {"success": True, "accessToken": user['accessToken'], "fname": user['fname'], "lname": user["lname"], "email": user['email'], "userType": user['userType'], "company": user["company"], "plan": user['plan']}
     else:
         return {"success": False, "message": "Wrong password."}
+
+@app.route('/tokenLogin', methods=['POST'])
+def tokenLogin():
+    data = request.json
+    try:
+        user = jwt.decode(data['accessToken'], secret, algorithms=['HS256'])
+    except:
+        return {"success": False}
+
+    if user['email'] == data['email']:
+        return {"success": True, "user": user}
+    else:
+        return {"success": False}
 
 @app.route('/')
 def index():

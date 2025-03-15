@@ -24,6 +24,16 @@ export default function OptionsMenu() {
     const handleClose = () => {
         setAnchorEl(null);
     };
+    const logout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("email");
+        window.location.href = "/";
+    }
+    const changeAccount = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("email");
+        window.location.href = "/login";
+    }
     return (
         <React.Fragment>
             <MenuButton
@@ -56,11 +66,11 @@ export default function OptionsMenu() {
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
                 <Divider />
-                <MenuItem onClick={handleClose}>Add another account</MenuItem>
                 <MenuItem onClick={handleClose}>Settings</MenuItem>
+                <MenuItem onClick={() => changeAccount()}>Change account</MenuItem>
                 <Divider />
                 <MenuItem
-                    onClick={handleClose}
+                    onClick={() => logout()}
                     sx={{
                         [`& .${listItemIconClasses.root}`]: {
                             ml: 'auto',
@@ -68,7 +78,7 @@ export default function OptionsMenu() {
                         },
                     }}
                 >
-                    <ListItemText>Logout</ListItemText>
+                    <ListItemText >Logout</ListItemText>
                     <ListItemIcon>
                         <LogoutRoundedIcon fontSize="small" />
                     </ListItemIcon>

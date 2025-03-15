@@ -48,15 +48,38 @@ export default function SignInCard() {
     };
 
     const handleSubmit = (event) => {
+        event.preventDefault();
         if (emailError || passwordError) {
             event.preventDefault();
             return;
         }
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        fetch("http://194.102.62.226:5000/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: data.get('email'),
+                password: data.get('password'),
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+                if (data.success) {
+                    localStorage.setItem("token", data.accessToken);
+                    localStorage.setItem("email", data.email);
+                    window.location.href = "/create-event";
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch((error) => console.error(error));
+        // console.log({
+        //     email: data.get('email'),
+        //     password: data.get('password'),
+        // });
     };
 
     const validateInputs = () => {
@@ -161,7 +184,7 @@ export default function SignInCard() {
                     Don&apos;t have an account?{' '}
                     <span>
             <Link
-                href="/material-ui/getting-started/templates/sign-in/"
+                href="/register"
                 variant="body2"
                 sx={{ alignSelf: 'center' }}
             >
