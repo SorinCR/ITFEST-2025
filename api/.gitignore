@@ -1,2 +1,4 @@
 .env
 mysql/
+.venv/
+__pycache__/
