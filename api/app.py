@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
 from flask_mongoengine import MongoEngine
 from dotenv import load_dotenv
@@ -16,8 +16,8 @@ app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
     'db': os.getenv("DB_NAME"),
     'host': os.getenv("DB_HOST"),
-    'password': os.getenv("DB_PASSWORD"),
-    'username': os.getenv("DB_USERNAME"),
+    'password': os.getenv("DB_PASS"),
+    'username': os.getenv("DB_USER"),
     'port': int(os.getenv("DB_PORT"))
 }
 
@@ -30,7 +30,8 @@ class User(db.Document):
     fname = db.StringField()
     lname = db.StringField()
     email = db.StringField()
-    type = db.StringField()
+    userType = db.StringField()
+    company = db.StringField()
     password = db.StringField()
     accessToken = db.StringField()
     events = db.ListField()
@@ -71,10 +72,28 @@ def register():
     if user:
         return {"success": False, "message": "User already exists"}
 
-    # encoded_jwt = jwt.encode(
-    #     {"fname": data['fname'], "lname": data["lname"], "email": data['email'], "type": data['type']}, secret, algorithm="HS256")
+    received_password = bytes(data['password'], 'UTF-8')
 
+    encoded_jwt = jwt.encode(
+        {"fname": data['fname'], "lname": data["lname"], "email": data['email'], "userType": data['userType'], "company": data["company"]}, secret, algorithm="HS256")
 
+    hashed_password = bcrypt.hashpw(received_password, bcrypt.gensalt())
+
+    User(fname=data['fname'], lname=data['lname'], email=data['email'],
+         userType=data["userType"], company=data["company"], password=hashed_password, accessToken=encoded_jwt).save()
+    return {"success": True, 'accessToken': encoded_jwt}
+
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.json
+    try:
+        user = User.objects.get(email=data['email'])
+    except:
+        return {"success": False, "message": "This e-mail doesn't exist."}
+    if bcrypt.checkpw(data['password'].encode('utf-8'), user['password'].encode('utf-8')):
+        return {"success": True, "accessToken": user['accessToken'], "fname": user['fname'], "lname": user["lname"], "email": user['email'], "userType": user['userType'], "company": user["company"]}
+    else:
+        return {"success": False, "message": "Wrong password."}
 
 @app.route('/')
 def index():
