@@ -34,6 +34,7 @@ class User(db.Document):
     events = db.ListField()
 
 class Event(db.Document):
+    eventId = db.IntField()
     name = db.StringField()
     date = db.DateField()
     location = db.StringField()
@@ -59,6 +60,9 @@ def after_request(response):
     response.headers.add('Access-Control-Allow-Methods',
                          'GET,PUT,POST,DELETE,OPTIONS')
     return response
+
+# @app.route('/register', methods=['POST'])
+
 
 @app.route('/')
 def index():
