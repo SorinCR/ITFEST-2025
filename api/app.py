@@ -16,7 +16,9 @@ app = Flask(__name__)
 app.config['MONGODB_SETTINGS'] = {
     'db': os.getenv("DB_NAME"),
     'host': os.getenv("DB_HOST"),
-    'port': 27017
+    'password': os.getenv("DB_PASSWORD"),
+    'username': os.getenv("DB_USERNAME"),
+    'port': int(os.getenv("DB_PORT"))
 }
 
 db = MongoEngine()
@@ -61,7 +63,17 @@ def after_request(response):
                          'GET,PUT,POST,DELETE,OPTIONS')
     return response
 
-# @app.route('/register', methods=['POST'])
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.json
+
+    user = User.objects(email=data['email'])
+    if user:
+        return {"success": False, "message": "User already exists"}
+
+    # encoded_jwt = jwt.encode(
+    #     {"fname": data['fname'], "lname": data["lname"], "email": data['email'], "type": data['type']}, secret, algorithm="HS256")
+
 
 
 @app.route('/')
