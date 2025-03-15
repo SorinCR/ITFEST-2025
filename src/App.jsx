@@ -3,8 +3,8 @@ import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import CreateEventDashboard from "./pages/CreateEventDashboard";
 import Leaderboard from "./pages/Leaderboard";
-import LoginPage from "./pages/Login";
-import SignupPage from "./pages/Signup";
+import LoginPage from "./pages/SigninSide.jsx";
+import SignupPage from "./pages/Signup.jsx";
 
 const App = () => {
     return (
