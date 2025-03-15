@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import Button from '@mui/material/Button';
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
@@ -54,7 +53,8 @@ ButtonField.propTypes = {
 };
 
 export default function CustomDatePicker() {
-    const [value, setValue] = React.useState(dayjs('2023-04-17'));
+    // Set the default value to the current date using dayjs()
+    const [value, setValue] = React.useState(dayjs());
     const [open, setOpen] = React.useState(false);
 
     return (
