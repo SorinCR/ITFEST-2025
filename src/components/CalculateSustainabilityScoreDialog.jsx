@@ -367,8 +367,7 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
             default:
                 break;
         }
-        // Venue Type
-        // Scoring based on the venue type selection.
+        // Venue Type (scoring based on selection)
         if (formData.venueType === "Outdoor" || formData.venueType === "Virtual") score += 5;
         else if (formData.venueType === "Hybrid") score += 4;
         else if (formData.venueType === "Indoor") score += 3;
@@ -539,9 +538,7 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
         const governanceScore = calculateGovernanceScore();
 
         const totalPoints = builtInScore + overviewScore + envImpactScore + governanceScore;
-
-        // Assuming maximum possible is 114 points,
-        // Scale the overall score to a 0-10 range:
+        // Scale overall score to a 0-10 range (assuming maximum possible is 114 points).
         const sustainabilityFactor = (totalPoints / 114) * 10;
         return { sustainabilityScore: sustainabilityFactor.toFixed(1), totalPoints };
     };
@@ -668,7 +665,7 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
         const flatMetrics = {};
         const metricsEvaluation = evaluateMetrics();
 
-        // Flatten builtIn metrics (already numbers).
+        // Flatten builtIn metrics.
         Object.keys(metricsEvaluation.builtIn).forEach((key) => {
             flatMetrics[key] = metricsEvaluation.builtIn[key];
         });
@@ -684,7 +681,7 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
         Object.keys(metricsEvaluation.governance).forEach((key) => {
             flatMetrics[key] = metricsEvaluation.governance[key].points;
         });
-        // Optionally, include overall totals.
+        // Include overall totals.
         const { totalPoints, sustainabilityScore } = calculateScore();
         flatMetrics.totalPoints = totalPoints;
         flatMetrics.sustainabilityFactor = Number(sustainabilityScore);
@@ -713,18 +710,15 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
             if (!formData.eventTiming) errors.push("Event Timing is required.");
             if (!formData.venueType) errors.push("Venue Type is required.");
         } else if (activeStep === 1) {
-            // Validate built‑in metrics.
             Object.keys(metricInputs).forEach((key) => {
                 if (!metricInputs[key].cluster) {
                     errors.push(`${key} is unanswered.`);
                 }
             });
-            // Validate Environmental Impact: Primary Source of Energy is required.
             if (!envImpact.energySource) {
                 errors.push("Primary Source of Energy is required.");
             }
         } else if (activeStep === 2) {
-            // Validate Governance & Digital questions.
             if (!governanceData.sustainabilityPolicy)
                 errors.push("Sustainability Policy is required.");
             if (!governanceData.sustainabilityReporting)
@@ -751,7 +745,6 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
         }
         setValidationErrors([]);
         if (activeStep === steps.length - 1) {
-            // On final step, calculate overall score and update state.
             const { sustainabilityScore } = calculateScore();
             setCalculatedScore(sustainabilityScore);
             submitDataToMongo();
@@ -767,21 +760,21 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
 
     // Submit data to backend.
     const submitDataToMongo = async () => {
-        // Build the flat metrics JSON with only the metric measured and the allocated points.
+        // Build the flat metrics JSON.
         const flatMetricsJson = buildFlatMetricsJson();
-        // Log the final flat JSON for debugging.
-        console.log("Final flat metrics JSON before submission:", JSON.stringify(flatMetricsJson, null, 2));
-
-        const dataToSend = {
+        // Create final JSON including overview information.
+        const finalJson = {
+            overview: { ...formData },
             metrics: flatMetricsJson,
             submittedAt: new Date(),
         };
+        console.log("Final JSON before submission:", JSON.stringify(finalJson, null, 2));
 
         try {
             const response = await fetch("/api/events", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dataToSend),
+                body: JSON.stringify(finalJson),
             });
             if (response.ok) {
                 setSubmissionStatus("Data successfully submitted!");
@@ -857,7 +850,7 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                                 />
                             )}
                         />
-                        {/* Venue Type selection now uses the interactive dropdown */}
+                        {/* Venue Type selection uses interactive dropdown */}
                         <Typography variant="subtitle1" sx={{ mt: 2 }}>
                             Venue Type
                         </Typography>
@@ -1268,7 +1261,7 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                     </Box>
                 );
             case 3:
-                // In the review step, we display an overview of each section’s metrics and points allocated.
+                // Review step
                 const { totalPoints } = calculateScore();
                 const metricsOverview = evaluateMetrics();
                 return (
@@ -1387,7 +1380,6 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                         </Step>
                     ))}
                 </Stepper>
-                {/* Wrap step content in a Fade component for smooth transitions */}
                 <Fade in={true} timeout={{ enter: 500, exit: 500 }} key={activeStep}>
                     <div>{renderStepContent(activeStep)}</div>
                 </Fade>

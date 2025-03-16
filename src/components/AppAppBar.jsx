@@ -13,6 +13,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import ColorModeIconDropdown from '../shared-theme/ColorModeIconDropdown';
 import Sitemark from './SitemarkIcon';
+import { Link as RouterLink } from "react-router-dom";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
     display: 'flex',
@@ -71,6 +72,15 @@ export default function AppAppBar() {
                             <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
                                 Blog
                             </Button>
+                            <Button
+                                variant="text"
+                                color="info"
+                                size="small"
+                                component={RouterLink}
+                                to="/leaderboard"
+                            >
+                                Leaderboard
+                            </Button>
                         </Box>
                     </Box>
                     <Box
@@ -80,10 +90,22 @@ export default function AppAppBar() {
                             alignItems: 'center',
                         }}
                     >
-                        <Button color="primary" variant="text" size="small">
+                        <Button
+                            component={RouterLink}
+                            to="/login"
+                            color="primary"
+                            variant="text"
+                            size="small"
+                        >
                             Sign in
                         </Button>
-                        <Button color="primary" variant="contained" size="small">
+                        <Button
+                            component={RouterLink}
+                            to="/register"
+                            color="primary"
+                            variant="contained"
+                            size="small"
+                        >
                             Sign up
                         </Button>
                         <ColorModeIconDropdown />
@@ -104,31 +126,43 @@ export default function AppAppBar() {
                             }}
                         >
                             <Box sx={{ p: 2, backgroundColor: 'background.default' }}>
-                                <Box
-                                    sx={{
-                                        display: 'flex',
-                                        justifyContent: 'flex-end',
-                                    }}
-                                >
+                                <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                                     <IconButton onClick={toggleDrawer(false)}>
                                         <CloseRoundedIcon />
                                     </IconButton>
                                 </Box>
-
                                 <MenuItem>Features</MenuItem>
                                 <MenuItem>Testimonials</MenuItem>
                                 <MenuItem>Highlights</MenuItem>
                                 <MenuItem>Pricing</MenuItem>
                                 <MenuItem>FAQ</MenuItem>
                                 <MenuItem>Blog</MenuItem>
+                                <MenuItem
+                                    component={RouterLink}
+                                    to="/leaderboard"
+                                >
+                                    Leaderboard
+                                </MenuItem>
                                 <Divider sx={{ my: 3 }} />
                                 <MenuItem>
-                                    <Button color="primary" variant="contained" fullWidth>
+                                    <Button
+                                        component={RouterLink}
+                                        to="/register"
+                                        color="primary"
+                                        variant="contained"
+                                        fullWidth
+                                    >
                                         Sign up
                                     </Button>
                                 </MenuItem>
                                 <MenuItem>
-                                    <Button color="primary" variant="outlined" fullWidth>
+                                    <Button
+                                        component={RouterLink}
+                                        to="/login"
+                                        color="primary"
+                                        variant="outlined"
+                                        fullWidth
+                                    >
                                         Sign in
                                     </Button>
                                 </MenuItem>
