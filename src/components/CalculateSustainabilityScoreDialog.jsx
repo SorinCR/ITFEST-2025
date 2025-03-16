@@ -948,6 +948,7 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose, extractedData }) 
             if (response.ok) {
                 setSubmissionStatus("Data successfully submitted!");
                 onClose();
+                window.location.reload();
             } else {
                 setSubmissionStatus("Submission failed.");
             }
