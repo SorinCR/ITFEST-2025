@@ -27,12 +27,13 @@ export default function MainGrid({ userData, events }) {
     // Total number of events in last 30 days
     const totalEvents = eventsLast30.length;
 
-    // Helper: Generate an array of last 30 days labels (e.g. "Apr 5")
+    // Helper: Generate an array of last 30 days labels (e.g. "Mar 16")
     const getLast30DaysLabels = () => {
         const labels = [];
+        const now = new Date();
         for (let i = 29; i >= 0; i--) {
-            const d = new Date();
-            d.setDate(d.getDate() - i);
+            const d = new Date(now);
+            d.setDate(now.getDate() - i);
             labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
         }
         return labels;
@@ -77,12 +78,13 @@ export default function MainGrid({ userData, events }) {
             const d = new Date(event.eventDate);
             return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === label;
         });
-        console.log(eventsLast30)
+        // console.log(eventsLast30)
         if (eventsOnDay.length === 0) return null;
         const total = eventsOnDay.reduce((sum, event) => sum + event.sustainabilityFactor, 0);
         return Number((total / eventsOnDay.length).toFixed(1));
 
-    });
+    }).map(value => value === null ? 0 : value);
+
 
     // Compute overall average sustainability factor for the period
     const sustainabilityValue =
@@ -94,6 +96,8 @@ export default function MainGrid({ userData, events }) {
                 ).toFixed(1)
             )
             : '-';
+
+            // console.log(eventsLast30)
 
     // Prepare data for each StatCard
     const statCardsData = [

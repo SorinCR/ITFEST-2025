@@ -6,7 +6,7 @@ import os
 import bcrypt
 import jwt
 import json
-import scraper
+from scraper import text_webpage, cooler_remover
 import google.generativeai as genai
 import requests
 from flask import jsonify
@@ -144,8 +144,9 @@ def extract_event():
     if not website_url:
         return jsonify({"error": "URL is required"}), 400
     
-    article_text = get_latest_article(website_url)
-    
+    # article_text = get_latest_article(website_url)
+    article_text = cooler_remover(text_webpage(website_url))
+    # print("Article text:", article_text)
     structured_data = extract_event_data(article_text)
     # print(structured_data.replace("```json", "").replace("```", ""))
     parsed_data = json.loads(structured_data.replace("```json", "").replace("```", ""))

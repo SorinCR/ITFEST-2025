@@ -17,6 +17,9 @@ export default function EventCard({event}) {
           alt={event.eventName}
         />
         <CardContent>
+          <Typography gutterBottom variant="body2" component="div">
+          {event.eventDate}
+          </Typography>
           <Typography gutterBottom variant="h5" component="div">
           {event.eventName}
           </Typography>

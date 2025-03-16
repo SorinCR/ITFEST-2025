@@ -24,9 +24,9 @@ AreaGradient.propTypes = {
     id: PropTypes.string.isRequired,
 };
 
-export default function SessionsChart({ events = [] }) {
+export default function SessionsChart({ events }) {
     const theme = useTheme();
-
+    // console.log(events);
     // Create an array of last 30 days labels (e.g., "Apr 5")
     const getLast30DaysLabels = () => {
         const labels = [];
@@ -52,6 +52,7 @@ export default function SessionsChart({ events = [] }) {
         return eventDate >= thirtyDaysAgo && eventDate <= now;
     });
 
+
     // Mapping string values to numbers for the metrics
     const energyMapping = { low: 1, medium: 2, high: 3 };
     const carbonMapping = { no: 0, low: 1, medium: 2, high: 3 };
@@ -64,14 +65,19 @@ export default function SessionsChart({ events = [] }) {
                 const d = new Date(event.eventDate);
                 return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === label;
             });
+
             if (eventsOnDay.length === 0) return null;
             const total = eventsOnDay.reduce((sum, event) => sum + (mapping[event[key]] || 0), 0);
-            return Number((total / eventsOnDay.length).toFixed(2));
+            return eventsOnDay.length === 0 ? null : Number((total / eventsOnDay.length).toFixed(2));
         });
 
-    const dailyEnergy = computeDailySeries(energyMapping, 'energyConsumption');
-    const dailyCarbon = computeDailySeries(carbonMapping, 'carbonOffsetting');
-    const dailyTransport = computeDailySeries(transportMapping, 'transportationEmissions');
+    let dailyEnergy = computeDailySeries(energyMapping, 'energyConsumption').map(value => value === null ? 0 : value);
+    let dailyCarbon = computeDailySeries(carbonMapping, 'carbonOffsetting').map(value => value === null ? 0 : value);
+    let dailyTransport = computeDailySeries(transportMapping, 'transportationEmissions').map(value => value === null ? 0 : value);
+
+    
+
+    // console.log(dailyCarbon, dailyEnergy, dailyTransport);
 
     // Compute the most frequent city and venue type combination (displayed in the header)
     const locationVenueCounts = eventsLast30.reduce((acc, event) => {
@@ -90,6 +96,8 @@ export default function SessionsChart({ events = [] }) {
         theme.palette.primary.main,
         theme.palette.primary.dark,
     ];
+
+    // console.log(dailyCarbon, dailyEnergy, dailyTransport);
 
     return (
         <Card variant="outlined" sx={{ width: '100%' }}>
