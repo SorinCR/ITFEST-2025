@@ -35,7 +35,7 @@ export default function ButtonsContainer() {
                         }}
                     >
                         <span role="img" aria-label="chart" style={{ marginRight: '8px' }}>
-                            📊
+                            ♻
                         </span>
                         Calculate Sustainability Score
                     </Button>
@@ -43,7 +43,7 @@ export default function ButtonsContainer() {
                 <Grid item xs={12}>
                     <Button
                         variant="outlined"
-                        color="secondary"
+                        color="primary"
                         fullWidth
                         onClick={() => setOpenAIDialog(true)}
                         sx={{
@@ -53,7 +53,7 @@ export default function ButtonsContainer() {
                         }}
                     >
                         <span role="img" aria-label="robot" style={{ marginRight: '8px' }}>
-                            🤖
+                            ✨
                         </span>
                         AI Event Description Parser
                     </Button>

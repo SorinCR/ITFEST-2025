@@ -61,14 +61,13 @@ export default function Dashboard(props) {
                 {/* Main content */}
                 <Box
                     component="main"
-                    sx={(theme) => ({
+                    sx={{
                         flexGrow: 1,
-                        backgroundColor: theme.vars
-                            ? `rgba(${theme.vars.palette.background.defaultChannel} / 1)`
-                            : alpha(theme.palette.background.default, 1),
+                        backgroundColor: "rgba(200, 230, 201, 0.2)", // Even more faded green
                         overflow: 'auto',
-                    })}
+                    }}
                 >
+
                     <Stack
                         spacing={2}
                         sx={{

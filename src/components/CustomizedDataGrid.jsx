@@ -4,9 +4,10 @@ import dayjs from 'dayjs';
 import Button from '@mui/material/Button';
 import CalendarTodayRoundedIcon from '@mui/icons-material/CalendarTodayRounded';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 
 function ButtonField(props) {
     const {
@@ -36,10 +37,6 @@ function ButtonField(props) {
 }
 
 ButtonField.propTypes = {
-    /**
-     * If `true`, the component is disabled.
-     * @default false
-     */
     disabled: PropTypes.bool,
     id: PropTypes.string,
     inputProps: PropTypes.shape({
@@ -59,21 +56,16 @@ export default function CustomDatePicker() {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DatePicker
-                value={value}
-                label={value == null ? null : value.format('MMM DD, YYYY')}
-                onChange={(newValue) => setValue(newValue)}
-                slots={{ field: ButtonField }}
-                slotProps={{
-                    field: { setOpen },
-                    nextIconButton: { size: 'small' },
-                    previousIconButton: { size: 'small' },
+            <Box
+                sx={{
+                    p: 2,
+                    textAlign: 'center',
                 }}
-                open={open}
-                onClose={() => setOpen(false)}
-                onOpen={() => setOpen(true)}
-                views={['day', 'month', 'year']}
-            />
+            >
+                <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+                    Measuring impact, making events matter...🌱
+                </Typography>
+            </Box>
         </LocalizationProvider>
     );
 }

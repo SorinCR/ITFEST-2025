@@ -24,21 +24,23 @@ const Drawer = styled(MuiDrawer)({
     },
 });
 
-export default function SideMenu({userData}) {
-    console.log(userData)
+export default function SideMenu({ userData }) {
+    console.log(userData);
     return (
         <Drawer
             variant="permanent"
             sx={{
                 display: { xs: 'none', md: 'block' },
                 [`& .${drawerClasses.paper}`]: {
-                    backgroundColor: 'background.paper',
+                    backgroundColor: 'rgba(0, 50, 0, 0.2)', // Increased transparency (alpha: 0.8)
                 },
             }}
         >
             <Box
                 sx={{
                     display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     mt: 'calc(var(--template-frame-height, 0px) + 4px)',
                     p: 1.5,
                 }}
@@ -69,16 +71,22 @@ export default function SideMenu({userData}) {
             >
                 <Avatar
                     sizes="small"
-                    alt=                        {userData.userType == "company" ? userData.company : `${userData.fname} ${userData.lname}`}
+                    alt={
+                        userData.userType === 'company'
+                            ? userData.company
+                            : `${userData.fname} ${userData.lname}`
+                    }
                     src="/static/images/avatar/7.jpg"
                     sx={{ width: 36, height: 36 }}
                 />
                 <Box sx={{ mr: 'auto' }}>
                     <Typography variant="body2" sx={{ fontWeight: 500, lineHeight: '16px' }}>
-                        {userData.userType == "company" ? userData.company : `${userData.fname} ${userData.lname}`}
+                        {userData.userType === 'company'
+                            ? userData.company
+                            : `${userData.fname} ${userData.lname}`}
                     </Typography>
                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                        {userData.plan == 0 ? "Free Plan" : "Enterprise Plan"}
+                        {userData.plan === 0 ? 'Free Plan' : 'Enterprise Plan'}
                     </Typography>
                 </Box>
                 <OptionsMenu />

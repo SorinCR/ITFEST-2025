@@ -17,7 +17,7 @@ export default function CardAlert() {
                     Enjoy 10% off when renewing your plan today.
                 </Typography>
                 <Button variant="contained" size="small" fullWidth>
-                    Get the discount
+                    Upgrade
                 </Button>
             </CardContent>
         </Card>
