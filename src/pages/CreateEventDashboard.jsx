@@ -27,6 +27,7 @@ export default function Dashboard(props) {
 
     const [userData, setUserData] = React.useState({});
     const [page, setPage] = React.useState("home");
+    const [events, setEvents] = React.useState([]);
 
     React.useEffect(() => {
         if(!localStorage.getItem("token")) {
@@ -52,6 +53,24 @@ export default function Dashboard(props) {
             })
             .catch((error) => console.error(error))
     }, []);
+
+    React.useEffect(() => {
+        fetch("http://194.102.62.226:5000/get_events", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: localStorage.getItem("email")
+            }),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data.events);
+                setEvents(data.events);
+            })
+            .catch((error) => console.error);
+    }, [])
 
     return (
         <AppTheme {...props} themeComponents={xThemeComponents}>
@@ -101,8 +120,7 @@ export default function Dashboard(props) {
                             mt: { xs: 8, md: 0 },
                         }}
                     >
-                        {/* <Header /> */}
-                        {/* <MainGrid userData={userData}/> */}
+                        
                     </Stack>
                 </Box></> : <></>}
             </Box>

@@ -161,6 +161,13 @@ def create_event_ai():
     parsed_data = json.loads(structured_data.replace("```json", "").replace("```", ""))
     return parsed_data
 
+@app.route('/get_events', methods=['POST'])
+def get_events():
+    data = request.json
+    user = User.objects.get(email=data['email'])
+    events = Event.objects(eventId__in=user['events'])
+    return {"events": events}    
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Headers',
