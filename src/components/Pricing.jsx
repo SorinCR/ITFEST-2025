@@ -104,21 +104,21 @@ export default function Pricing() {
                     >
                         <Card
                             sx={[
-                                {
+                                (theme) => ({
                                     p: 2,
                                     display: 'flex',
                                     flexDirection: 'column',
                                     gap: 4,
-                                },
+                                    background: theme.palette.mode === 'dark'
+                                        ? '#252927'
+                                        : 'linear-gradient(135deg, #C8E6C9 0%, #81C784 100%)',
+                                }),
                                 tier.title === 'Professional' &&
                                 ((theme) => ({
                                     border: 'none',
-                                    background:
-                                        'radial-gradient(circle at 50% 0%, hsl(220, 20%, 35%), hsl(220, 30%, 6%))',
                                     boxShadow: `0 8px 12px hsla(220, 20%, 42%, 0.2)`,
                                     ...theme.applyStyles('dark', {
-                                        background:
-                                            'radial-gradient(circle at 50% 0%, hsl(220, 20%, 20%), hsl(220, 30%, 16%))',
+                                        background: '#252927',
                                         boxShadow: `0 8px 12px hsla(0, 0%, 0%, 0.8)`,
                                     }),
                                 })),
@@ -136,7 +136,7 @@ export default function Pricing() {
                                         },
                                         tier.title === 'Professional'
                                             ? { color: 'grey.100' }
-                                            : { color: '' },
+                                            : {},
                                     ]}
                                 >
                                     <Typography component="h3" variant="h6">
@@ -154,7 +154,7 @@ export default function Pricing() {
                                         },
                                         tier.title === 'Professional'
                                             ? { color: 'grey.50' }
-                                            : { color: null },
+                                            : {},
                                     ]}
                                 >
                                     <Typography component="h3" variant="h2">
@@ -182,11 +182,11 @@ export default function Pricing() {
                                         />
                                         <Typography
                                             variant="subtitle2"
-                                            component={'span'}
+                                            component="span"
                                             sx={[
                                                 tier.title === 'Professional'
                                                     ? { color: 'grey.50' }
-                                                    : { color: null },
+                                                    : {},
                                             ]}
                                         >
                                             {line}

@@ -59,7 +59,10 @@ export default function Highlights() {
                 pt: { xs: 4, sm: 12 },
                 pb: { xs: 8, sm: 16 },
                 color: 'white',
-                bgcolor: 'grey.900',
+                background: (theme) =>
+                    theme.palette.mode === 'dark'
+                        ? 'linear-gradient(135deg, #101A10 0%, #3A403A 50%, #262B28 100%)'
+                        : 'linear-gradient(135deg, #C8E6C9 0%, #81C784 100%)',
             }}
         >
             <Container

@@ -1,103 +1,86 @@
-import React, { useState } from 'react';
-import {
-    Container,
-    Paper,
-    Box,
-    Tabs,
-    Tab,
-    Typography,
-    Avatar,
-    Card,
-    CardContent,
-    Divider,
-    ListItemAvatar,
-} from '@mui/material';
-import { motion } from 'framer-motion';
+import React from 'react';
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Fade from '@mui/material/Fade';
+import { Box } from '@mui/material';
 
-const organizations = [
-    { rank: 1, name: "Green Earth Org", score: 95, logo: "https://via.placeholder.com/40?text=GE" },
-    { rank: 2, name: "Eco Warriors", score: 92, logo: "https://via.placeholder.com/40?text=EW" },
-    { rank: 3, name: "Sustainable Future", score: 90, logo: "https://via.placeholder.com/40?text=SF" },
-    { rank: 4, name: "Clean Air Initiative", score: 88, logo: "https://via.placeholder.com/40?text=CA" },
-    { rank: 5, name: "Renewable Power", score: 85, logo: "https://via.placeholder.com/40?text=RP" },
+// Create custom styled table cells.
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+    // Header cells: use a gradient background similar to your other components.
+    [`&.${tableCellClasses.head}`]: {
+        background: 'linear-gradient(135deg, #e8f5e9, #e0f7fa)',
+        color: theme.palette.common.white,
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+    // Body cells.
+    [`&.${tableCellClasses.body}`]: {
+        fontSize: 14,
+    },
+}));
+
+// Custom table rows with alternating background colors.
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+    '&:nth-of-type(odd)': {
+        backgroundColor: theme.palette.action.hover,
+    },
+    '&:last-child td, &:last-child th': {
+        border: 0,
+    },
+}));
+
+// Helper function to create data rows.
+function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+}
+
+// Sample data.
+const rows = [
+    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+    createData('Eclair', 262, 16.0, 24, 6.0),
+    createData('Cupcake', 305, 3.7, 67, 4.3),
+    createData('Gingerbread', 356, 16.0, 49, 3.9),
 ];
 
-const individuals = [
-    { rank: 1, name: "Alice Johnson", score: 98, avatar: "https://via.placeholder.com/40?text=A" },
-    { rank: 2, name: "Bob Smith", score: 96, avatar: "https://via.placeholder.com/40?text=B" },
-    { rank: 3, name: "Carol Lee", score: 93, avatar: "https://via.placeholder.com/40?text=C" },
-    { rank: 4, name: "David Kim", score: 90, avatar: "https://via.placeholder.com/40?text=D" },
-    { rank: 5, name: "Emma Wilson", score: 88, avatar: "https://via.placeholder.com/40?text=E" },
-];
-
-const LeaderboardItem = ({ item, type }) => (
-    <motion.div
-        whileHover={{ scale: 1.03 }}
-        transition={{ duration: 0.2 }}
-    >
-        <Card variant="outlined" sx={{ display: 'flex', alignItems: 'center', p: 2, mb: 2, boxShadow: 3 }}>
-            <Typography variant="h6" sx={{ width: 40, fontWeight: 'bold' }}>
-                {item.rank}.
-            </Typography>
-            <ListItemAvatar>
-                <Avatar src={type === 'org' ? item.logo : item.avatar} alt={item.name} />
-            </ListItemAvatar>
-            <CardContent sx={{ flexGrow: 1 }}>
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                    {item.name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                    Score: {item.score}
-                </Typography>
-            </CardContent>
-        </Card>
-    </motion.div>
-);
-
-const Leaderboard = () => {
-    const [tabValue, setTabValue] = useState(0);
-
-    const handleTabChange = (event, newValue) => {
-        setTabValue(newValue);
-    };
-
-    // Renders a list of leaderboard items.
-    const renderList = (data, type) => (
-        <Box sx={{ mt: 3 }}>
-            {data.map((item) => (
-                <LeaderboardItem key={item.rank} item={item} type={type} />
-            ))}
-        </Box>
-    );
-
+export default function CustomizedTables() {
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
-            <Paper sx={{ p: 4, mb: 4, textAlign: 'center', background: 'linear-gradient(135deg, #e0f7fa, #e8f5e9)' }} elevation={3}>
-                <Typography variant="h4" sx={{ fontWeight: 'bold', mb: 1 }}>
-                    Sustainability Leaderboard
-                </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
-                    Recognizing top organizations and individuals for their sustainable efforts.
-                </Typography>
-            </Paper>
-            <Paper sx={{ p: 3 }}>
-                <Tabs
-                    value={tabValue}
-                    onChange={handleTabChange}
-                    indicatorColor="primary"
-                    textColor="primary"
-                    centered
-                    sx={{ mb: 2 }}
-                >
-                    <Tab label="Organizations" />
-                    <Tab label="Individuals" />
-                </Tabs>
-                <Divider sx={{ mb: 3 }} />
-                {tabValue === 0 && renderList(organizations, 'org')}
-                {tabValue === 1 && renderList(individuals, 'ind')}
-            </Paper>
-        </Container>
+        <Fade in timeout={500}>
+            <TableContainer
+                component={Paper}
+                sx={{ borderRadius: 2, boxShadow: 3 }}
+            >
+                <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                    <TableHead>
+                        <TableRow>
+                            <StyledTableCell>Dessert (100g serving)</StyledTableCell>
+                            <StyledTableCell align="right">Calories</StyledTableCell>
+                            <StyledTableCell align="right">Fat&nbsp;(g)</StyledTableCell>
+                            <StyledTableCell align="right">Carbs&nbsp;(g)</StyledTableCell>
+                            <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {rows.map((row) => (
+                            <StyledTableRow key={row.name}>
+                                <StyledTableCell component="th" scope="row">
+                                    {row.name}
+                                </StyledTableCell>
+                                <StyledTableCell align="right">{row.calories}</StyledTableCell>
+                                <StyledTableCell align="right">{row.fat}</StyledTableCell>
+                                <StyledTableCell align="right">{row.carbs}</StyledTableCell>
+                                <StyledTableCell align="right">{row.protein}</StyledTableCell>
+                            </StyledTableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+        </Fade>
     );
-};
-
-export default Leaderboard;
+}
