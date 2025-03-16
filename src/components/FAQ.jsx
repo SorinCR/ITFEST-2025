@@ -39,9 +39,10 @@ export default function FAQ() {
                     textAlign: { sm: 'left', md: 'center' },
                 }}
             >
-                Frequently asked questions
+                Frequently Asked Questions
             </Typography>
             <Box sx={{ width: '100%' }}>
+                {/* FAQ 1: Contact Support */}
                 <Accordion
                     expanded={expanded.includes('panel1')}
                     onChange={handleChange('panel1')}
@@ -62,12 +63,14 @@ export default function FAQ() {
                             sx={{ maxWidth: { sm: '100%', md: '70%' } }}
                         >
                             You can reach our customer support team by emailing&nbsp;
-                            <Link href="mailto:support@email.com">support@email.com</Link>
-                            &nbsp;or calling our toll-free number. We&apos;re here to assist you
-                            promptly.
+                            <Link href="mailto:support@email.com">
+                                support@email.com
+                            </Link>
+                            &nbsp;or calling our toll-free number. We’re here to assist you promptly.
                         </Typography>
                     </AccordionDetails>
                 </Accordion>
+                {/* FAQ 2: Refund/Cancellation Policy */}
                 <Accordion
                     expanded={expanded.includes('panel2')}
                     onChange={handleChange('panel2')}
@@ -78,7 +81,7 @@ export default function FAQ() {
                         id="panel2d-header"
                     >
                         <Typography component="span" variant="subtitle2">
-                            Can I return the product if it doesn&apos;t meet my expectations?
+                            What is your refund or cancellation policy for the subscription?
                         </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -87,12 +90,11 @@ export default function FAQ() {
                             gutterBottom
                             sx={{ maxWidth: { sm: '100%', md: '70%' } }}
                         >
-                            Absolutely! We offer a hassle-free return policy. If you&apos;re not
-                            completely satisfied, you can return the product within [number of
-                            days] days for a full refund or exchange.
+                            We offer a hassle-free cancellation policy. If you’re not completely satisfied with our service, you can cancel your subscription within a specified period for a full refund.
                         </Typography>
                     </AccordionDetails>
                 </Accordion>
+                {/* FAQ 3: Differentiating Features */}
                 <Accordion
                     expanded={expanded.includes('panel3')}
                     onChange={handleChange('panel3')}
@@ -103,7 +105,7 @@ export default function FAQ() {
                         id="panel3d-header"
                     >
                         <Typography component="span" variant="subtitle2">
-                            What makes your product stand out from others in the market?
+                            What makes your sustainability tool stand out from others in the market?
                         </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -112,12 +114,11 @@ export default function FAQ() {
                             gutterBottom
                             sx={{ maxWidth: { sm: '100%', md: '70%' } }}
                         >
-                            Our product distinguishes itself through its adaptability, durability,
-                            and innovative features. We prioritize user satisfaction and
-                            continually strive to exceed expectations in every aspect.
+                            Our product is unique because it seamlessly combines a free sustainability scoring tool with advanced premium features such as AI automation and automatic event detection. We also offer digital badges and a public leaderboard, setting the standard for event sustainability validation.
                         </Typography>
                     </AccordionDetails>
                 </Accordion>
+                {/* FAQ 4: Warranty & Ongoing Support */}
                 <Accordion
                     expanded={expanded.includes('panel4')}
                     onChange={handleChange('panel4')}
@@ -128,7 +129,7 @@ export default function FAQ() {
                         id="panel4d-header"
                     >
                         <Typography component="span" variant="subtitle2">
-                            Is there a warranty on the product, and what does it cover?
+                            Is there a warranty or ongoing support for the tool?
                         </Typography>
                     </AccordionSummary>
                     <AccordionDetails>
@@ -137,10 +138,55 @@ export default function FAQ() {
                             gutterBottom
                             sx={{ maxWidth: { sm: '100%', md: '70%' } }}
                         >
-                            Yes, our product comes with a [length of warranty] warranty. It covers
-                            defects in materials and workmanship. If you encounter any issues
-                            covered by the warranty, please contact our customer support for
-                            assistance.
+                            Yes, our tool is backed by continuous updates and comprehensive customer support. We ensure that any issues related to performance or compliance with EU sustainability standards are promptly addressed.
+                        </Typography>
+                    </AccordionDetails>
+                </Accordion>
+                {/* FAQ 5: Measuring Sustainability */}
+                <Accordion
+                    expanded={expanded.includes('panel5')}
+                    onChange={handleChange('panel5')}
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel5d-content"
+                        id="panel5d-header"
+                    >
+                        <Typography component="span" variant="subtitle2">
+                            How does the app measure event sustainability?
+                        </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Typography
+                            variant="body2"
+                            gutterBottom
+                            sx={{ maxWidth: { sm: '100%', md: '70%' } }}
+                        >
+                            Our app utilizes a combination of a simple user input form and AI-powered analysis to generate an accurate sustainability score. This method ensures transparency and helps organizers meet stringent EU ESG reporting requirements.
+                        </Typography>
+                    </AccordionDetails>
+                </Accordion>
+                {/* FAQ 6: Premium Features */}
+                <Accordion
+                    expanded={expanded.includes('panel6')}
+                    onChange={handleChange('panel6')}
+                >
+                    <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel6d-content"
+                        id="panel6d-header"
+                    >
+                        <Typography component="span" variant="subtitle2">
+                            What are the benefits of upgrading to the premium version?
+                        </Typography>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <Typography
+                            variant="body2"
+                            gutterBottom
+                            sx={{ maxWidth: { sm: '100%', md: '70%' } }}
+                        >
+                            The premium version offers advanced features such as AI automation for completing sustainability questionnaires, automatic detection of events, enhanced dashboards, and digital badges that validate your event’s sustainability. These features help you meet strict ESG and EU reporting standards while improving overall event performance.
                         </Typography>
                     </AccordionDetails>
                 </Accordion>

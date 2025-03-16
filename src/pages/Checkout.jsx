@@ -53,9 +53,11 @@ const SubscriptionSelector = ({ selectedTier, setSelectedTier }) => {
                     <Typography variant="h4" sx={{ my: 1 }}>
                         $15<span style={{ fontSize: '1rem' }}>/month</span>
                     </Typography>
-                    <Typography variant="body2">20 users included</Typography>
-                    <Typography variant="body2">10 GB storage</Typography>
+                    <Typography variant="body2">Automaticc AI questionaire filling</Typography>
+                    <Typography variant="body2">Help center access</Typography>
                     <Typography variant="body2">Priority email support</Typography>
+                    <Typography variant="body2">Dedicated team</Typography>
+                    <Typography variant="body2">Best deals</Typography>
                 </CardContent>
             </Card>
             <Card
@@ -70,14 +72,19 @@ const SubscriptionSelector = ({ selectedTier, setSelectedTier }) => {
                     <Typography variant="h4" sx={{ my: 1 }}>
                         $30<span style={{ fontSize: '1rem' }}>/month</span>
                     </Typography>
-                    <Typography variant="body2">50 users included</Typography>
-                    <Typography variant="body2">30 GB storage</Typography>
+                    <Typography variant="body2">Automatic AI questionaire filling</Typography>
+                    <Typography variant="body2">Automatic detection and analysing of events post on company web page</Typography>
+                    <Typography variant="body2">Help center access</Typography>
                     <Typography variant="body2">Phone & email support</Typography>
                 </CardContent>
             </Card>
         </Box>
     );
 };
+
+
+
+
 
 const steps = ['Shipping address', 'Payment details', 'Review your order'];
 function getStepContent(step) {

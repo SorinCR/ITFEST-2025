@@ -41,19 +41,8 @@ export default function LogoCollection() {
                 align="center"
                 sx={{ color: 'text.secondary' }}
             >
-                Trusted by the best companies
             </Typography>
-            <Grid container sx={{ justifyContent: 'center', mt: 0.5, opacity: 0.6 }}>
-                {logos.map((logo, index) => (
-                    <Grid item key={index}>
-                        <img
-                            src={logo}
-                            alt={`Fake company number ${index + 1}`}
-                            style={logoStyle}
-                        />
-                    </Grid>
-                ))}
-            </Grid>
+
         </Box>
     );
 }

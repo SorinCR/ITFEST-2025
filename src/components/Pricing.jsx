@@ -12,27 +12,29 @@ import Typography from '@mui/material/Typography';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 
+// Pricing tiers illustrate the freemium model and premium upsell strategy.
+// Each tier supports a part of our sustainability tool's value proposition.
 const tiers = [
     {
         title: 'Free',
         price: '0',
         description: [
-            '10 users included',
-            '2 GB of storage',
+            'Questionaire to measure the sustainability factor',
             'Help center access',
             'Email support',
         ],
         buttonText: 'Sign up for free',
         buttonVariant: 'outlined',
         buttonColor: 'primary',
+        // The free tier is designed to drive initial adoption,
+        // allowing event organizers to test the basic sustainability scoring tool.
     },
     {
         title: 'Professional',
         subheader: 'Recommended',
         price: '15',
         description: [
-            '20 users included',
-            '10 GB of storage',
+            'Automaticc AI questionaire filling',
             'Help center access',
             'Priority email support',
             'Dedicated team',
@@ -41,19 +43,24 @@ const tiers = [
         buttonText: 'Start now',
         buttonVariant: 'contained',
         buttonColor: 'secondary',
+        // The Professional tier targets organizations that require enhanced features
+        // such as AI automation and detailed reporting to comply with EU ESG standards.
+        // It is positioned as the recommended option for growing sustainability needs.
     },
     {
         title: 'Enterprise',
         price: '30',
         description: [
-            '50 users included',
-            '30 GB of storage',
+            'Automaticc AI questionaire filling',
+            'Automatic detection and analysing of events post on company web page',
             'Help center access',
             'Phone & email support',
         ],
         buttonText: 'Contact us',
         buttonVariant: 'outlined',
         buttonColor: 'primary',
+        // The Enterprise tier caters to large organizations with robust requirements,
+        // offering comprehensive support and higher resource allocation.
     },
 ];
 

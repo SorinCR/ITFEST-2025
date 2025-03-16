@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useTheme } from '@mui/system';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import Container from '@mui/material/Container';
@@ -52,17 +53,25 @@ const items = [
 ];
 
 export default function Highlights() {
+    const theme = useTheme();
+
+    // Define dynamic values based on the current theme mode.
+    const cardBackground = theme.palette.mode === 'dark' ? 'grey.800' : 'white';
+    const cardBorderColor = theme.palette.mode === 'dark' ? 'hsla(220, 25%, 25%, 0.3)' : 'grey.300';
+    const textColor = theme.palette.mode === 'dark' ? 'white' : 'black';
+    const gradientBackground =
+        theme.palette.mode === 'dark'
+            ? 'linear-gradient(135deg, #101A10 0%, #3A403A 50%, #262B28 100%)'
+            : 'linear-gradient(135deg, #C8E6C9 0%, #81C784 100%)';
+
     return (
         <Box
             id="highlights"
             sx={{
                 pt: { xs: 4, sm: 12 },
                 pb: { xs: 8, sm: 16 },
-                color: 'white',
-                background: (theme) =>
-                    theme.palette.mode === 'dark'
-                        ? 'linear-gradient(135deg, #101A10 0%, #3A403A 50%, #262B28 100%)'
-                        : 'linear-gradient(135deg, #C8E6C9 0%, #81C784 100%)',
+                color: textColor,
+                background: gradientBackground,
             }}
         >
             <Container
@@ -83,7 +92,7 @@ export default function Highlights() {
                     <Typography component="h2" variant="h4" gutterBottom>
                         Highlights
                     </Typography>
-                    <Typography variant="body1" sx={{ color: 'grey.400' }}>
+                    <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
                         Explore why our product stands out: adaptability, durability,
                         user-friendly design, and innovation. Enjoy reliable customer support and
                         precision in every detail.
@@ -101,16 +110,16 @@ export default function Highlights() {
                                     color: 'inherit',
                                     p: 3,
                                     height: '100%',
-                                    borderColor: 'hsla(220, 25%, 25%, 0.3)',
-                                    backgroundColor: 'grey.800',
+                                    borderColor: cardBorderColor,
+                                    backgroundColor: cardBackground,
                                 }}
                             >
-                                <Box sx={{ opacity: '50%' }}>{item.icon}</Box>
+                                <Box sx={{ opacity: 0.5 }}>{item.icon}</Box>
                                 <div>
                                     <Typography gutterBottom sx={{ fontWeight: 'medium' }}>
                                         {item.title}
                                     </Typography>
-                                    <Typography variant="body2" sx={{ color: 'grey.400' }}>
+                                    <Typography variant="body2" sx={{ color: theme.palette.text.secondary }}>
                                         {item.description}
                                     </Typography>
                                 </div>
