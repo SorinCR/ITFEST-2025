@@ -44,24 +44,34 @@ class User(db.Document):
 
 class Event(db.Document):
     eventId = db.IntField()
-    name = db.StringField()
-    date = db.DateField()
-    location = db.StringField()
-    estimated_attendees = db.IntField()
-    venue_type = db.StringField()
-    energy_consumption = db.StringField()
-    renewable_energy_usage = db.IntField()
-    water_consumption = db.IntField()
-    waste_diversion = db.IntField()
-    recycling_rate = db.IntField()
-    food_waste = db.StringField()
-    transportation_emissions = db.StringField()
-    carbon_offsetting = db.IntField()
-    local_sourcing = db.IntField()
-    green_procurement = db.IntField()
-    sustainable_catering = db.BooleanField()
-    digital_integration = db.BooleanField()
-    
+    eventName = db.StringField()
+    eventDate = db.StringField()
+    eventLocation = db.StringField()
+    approximateAttendees = db.StringField()
+    eventDuration = db.StringField()
+    venueType = db.StringField()
+    eventTiming = db.StringField()
+    energyConsumption = db.StringField()
+    renewableEnergyUsage = db.StringField()
+    waterConsumption = db.StringField()
+    wasteDiversion = db.StringField()
+    recyclingRate = db.StringField()
+    foodWaste = db.StringField()
+    transportationEmissions = db.StringField()
+    carbonOffsetting = db.StringField()
+    localSourcing = db.StringField()
+    greenProcurement = db.StringField()
+    energySource = db.StringField()
+    energyEfficientPractices = db.ListField(db.StringField())
+    sustainabilityPolicy = db.StringField()
+    sustainabilityReporting = db.StringField()
+    vendorEvaluation = db.StringField()
+    independentAudit = db.StringField()
+    digitalPractices = db.StringField()
+    dataCollection = db.StringField()
+    performanceReviewFrequency = db.StringField()
+    totalPoints = db.FloatField()
+    sustainabilityFactor = db.FloatField()
 
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
@@ -126,6 +136,20 @@ def extract_event_data(text):
     response = model.generate_content(prompt)
     return response.text
 
+
+@app.route('/create_event', methods=['POST'])
+def create_event():
+    data = request.json
+    last_event = Event.objects().order_by('-eventId').first()
+    new_event_id = last_event.eventId + 1 if last_event else 1
+    event = Event(eventId=new_event_id, eventName=data['eventName'], eventDate=data['eventDate'], eventLocation=data['eventLocation'], approximateAttendees=data['approximateAttendees'], eventDuration=data['eventDuration'], venueType=data['venueType'], eventTiming=data['eventTiming'], energyConsumption=data['energyConsumption'], renewableEnergyUsage=data['renewableEnergyUsage'], waterConsumption=data['waterConsumption'], wasteDiversion=data['wasteDiversion'], recyclingRate=data['recyclingRate'], foodWaste=data['foodWaste'], transportationEmissions=data['transportationEmissions'], carbonOffsetting=data['carbonOffsetting'], localSourcing=data['localSourcing'], greenProcurement=data['greenProcurement'], energySource=data['energySource'], energyEfficientPractices=data['energyEfficientPractices'], sustainabilityPolicy=data['sustainabilityPolicy'], sustainabilityReporting=data['sustainabilityReporting'], vendorEvaluation=data['vendorEvaluation'], independentAudit=data['independentAudit'], digitalPractices=data['digitalPractices'], dataCollection=data['dataCollection'], performanceReviewFrequency=data['performanceReviewFrequency'], totalPoints=data['totalPoints'], sustainabilityFactor=data['sustainabilityFactor'])
+    event.save()
+
+    user = User.objects.get(email=data['email'])
+    user['events'].append(new_event_id)
+    User.update(user, events=user['events'])
+    return {"success": True, "eventId": new_event_id}
+
 @app.route('/extract_event', methods=['POST'])
 def extract_event():
     data = request.json
@@ -138,6 +162,14 @@ def extract_event():
     
     structured_data = extract_event_data(article_text)
     # print(structured_data.replace("```json", "").replace("```", ""))
+    parsed_data = json.loads(structured_data.replace("```json", "").replace("```", ""))
+    return parsed_data
+
+@app.route('/create_event_ai', methods=['POST'])
+def create_event_ai():
+    data = request.json
+    structured_data = extract_event_data("Participate in the 'Bike to Work' day in Timișoara, reducing urban pollution and encouraging sustainable transportation within the city. The event will take place on 15th of May, 2022, starting at 8:00 AM in the city center. The event is expected to attract around 500 participants, with a duration of 4 hours. The event will take place in the city center, with a mix of indoor and outdoor activities. The event will include a bike parade, a bike maintenance workshop, and a bike-sharing program. The event will be powered by renewable energy sources, with solar panels and wind turbines providing electricity. The event will also feature a water station, recycling bins, and composting facilities to reduce waste and promote sustainability. The event will have a recycling rate of 80%, with waste diversion and food waste reduction programs in place. The event will also include a transportation plan, with shuttle buses and bike lanes provided for participants. The event will offset its carbon footprint through tree planting and other carbon offsetting measures. The event will source local food and beverages, with an emphasis on organic and sustainable products. The event will also feature sustainable catering options, with vegetarian and vegan food choices available. The event will be digitally integrated, with a website, social media pages, and a mobile app providing information and updates. The event will be promoted through online and offline channels, with a focus on sustainability and environmental awareness.")
+    
     parsed_data = json.loads(structured_data.replace("```json", "").replace("```", ""))
     return parsed_data
 

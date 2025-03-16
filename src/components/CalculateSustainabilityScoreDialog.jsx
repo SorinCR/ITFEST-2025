@@ -278,13 +278,71 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
 
     useEffect(() => {
         const dummyLocations = [
-            "New York, NY",
-            "Los Angeles, CA",
-            "Chicago, IL",
-            "Houston, TX",
-            "Phoenix, AZ",
-            "Philadelphia, PA",
+            "Bucharest",
+            "Cluj-Napoca",
+            "Timișoara",
+            "Iași",
+            "Constanța",
+            "Brașov",
+            "Craiova",
+            "Galați",
+            "Ploiești",
+            "Oradea",
+            "Brăila",
+            "Arad",
+            "Pitești",
+            "Sibiu",
+            "Bacău",
+            "Târgu Mureș",
+            "Baia Mare",
+            "Buzău",
+            "Botoșani",
+            "Satu Mare",
+            "Râmnicu Vâlcea",
+            "Drobeta-Turnu Severin",
+            "Suceava",
+            "Focșani",
+            "Bistrița",
+            "Târgoviște",
+            "Reșița",
+            "Slatina",
+            "Călărași",
+            "Alba Iulia",
+            "Giurgiu",
+            "Deva",
+            "Hunedoara",
+            "Zalău",
+            "Sfântu Gheorghe",
+            "Bârlad",
+            "Vaslui",
+            "Roman",
+            "Turda",
+            "Mediaș",
+            "Lugoj",
+            "Slobozia",
+            "Pașcani",
+            "Petroșani",
+            "Câmpina",
+            "Miercurea Ciuc",
+            "Sighetu Marmației",
+            "Câmpulung",
+            "Rădăuți",
+            "Târgu Jiu",
+            "Făgăraș",
+            "Cernavodă",
+            "Caracal",
+            "Roșiorii de Vede",
+            "Tecuci",
+            "Oltenița",
+            "Motru",
+            "Săcele",
+            "Câmpia Turzii",
+            "Blaj",
+            "Filiași",
+            "Mangalia",
+            "Curtea de Argeș"
         ];
+        
         const filtered = dummyLocations.filter((loc) =>
             loc.toLowerCase().includes(locationInput.toLowerCase())
         );
@@ -764,14 +822,40 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
         const flatMetricsJson = buildFlatMetricsJson();
         // Create final JSON including overview information.
         const finalJson = {
-            overview: { ...formData },
-            metrics: flatMetricsJson,
-            submittedAt: new Date(),
+            eventName: formData.eventName,
+            eventDate: formData.eventDate,
+            eventLocation: formData.eventLocation,
+            approximateAttendees: formData.approximateAttendees,
+            eventDuration: formData.eventDuration,
+            venueType: formData.venueType,
+            eventTiming: formData.eventTiming,
+            energyConsumption: metricInputs.energyConsumption.cluster,
+            renewableEnergyUsage: metricInputs.renewableEnergyUsage.cluster,
+            waterConsumption: metricInputs.waterConsumption.cluster,
+            wasteDiversion: metricInputs.wasteDiversion.cluster,
+            recyclingRate: metricInputs.recyclingRate.cluster,
+            foodWaste: metricInputs.foodWaste.cluster,
+            transportationEmissions: metricInputs.transportationEmissions.cluster,
+            carbonOffsetting: metricInputs.carbonOffsetting.cluster,
+            localSourcing: metricInputs.localSourcing.cluster,
+            greenProcurement: metricInputs.greenProcurement.cluster,
+            energySource: envImpact.energySource,
+            energyEfficientPractices: envImpact.energyEfficientPractices,
+            sustainabilityPolicy: governanceData.sustainabilityPolicy,
+            sustainabilityReporting: governanceData.sustainabilityReporting,
+            vendorEvaluation: governanceData.vendorEvaluation,
+            independentAudit: governanceData.independentAudit,
+            digitalPractices: governanceData.digitalPractices,
+            dataCollection: governanceData.dataCollection,
+            performanceReviewFrequency: governanceData.performanceReviewFrequency,
+            totalPoints: flatMetricsJson.totalPoints,
+            sustainabilityFactor: flatMetricsJson.sustainabilityFactor,
+            email: localStorage.getItem("email")
         };
-        console.log("Final JSON before submission:", JSON.stringify(finalJson, null, 2));
+        // console.log("Final JSON before submission:", JSON.stringify(finalJson, null, 2));
 
         try {
-            const response = await fetch("/api/events", {
+            const response = await fetch("http://194.102.62.226:5000/create_event", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(finalJson),
@@ -1057,7 +1141,7 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                                         <FormControlLabel
                                             value="100Renewable"
                                             control={<Radio />}
-                                            label="100% renewable (5 points) – ideal for sustainability"
+                                            label="100% renewable (5 points) - ideal for sustainability"
                                         />
                                         <FormControlLabel
                                             value="mostlyRenewable"
