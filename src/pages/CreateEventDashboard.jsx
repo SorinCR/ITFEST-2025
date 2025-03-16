@@ -9,6 +9,8 @@ import Header from '../components/Header';
 import MainGrid from '../components/MainGrid';
 import SideMenu from '../components/SideMenu';
 import AppTheme from '../shared-theme/AppTheme';
+import EventCard from '../components/EventCard';
+import Grid from '@mui/material/Grid';
 import {
     chartsCustomizations,
     dataGridCustomizations,
@@ -23,10 +25,17 @@ const xThemeComponents = {
     ...treeViewCustomizations,
 };
 
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import CardActionArea from '@mui/material/CardActionArea';
+import { Grid2 } from '@mui/material';
+
 export default function Dashboard(props) {
 
     const [userData, setUserData] = React.useState({});
-    const [page, setPage] = React.useState("home");
+    const [page, setPage] = React.useState("Home");
     const [events, setEvents] = React.useState([]);
 
     React.useEffect(() => {
@@ -76,11 +85,11 @@ export default function Dashboard(props) {
         <AppTheme {...props} themeComponents={xThemeComponents}>
             <CssBaseline enableColorScheme />
             <Box sx={{ display: 'flex' }}>
-                <SideMenu userData={userData} setPage={setPage}/>
+                <SideMenu userData={userData} setPage={setPage} page={page}/>
                 <AppNavbar />
                 
                 {/* Main content */}
-                {page == "home" ? <><Box
+                {page == "Home" ? <><Box
                     component="main"
                     sx={{
                         flexGrow: 1,
@@ -102,7 +111,7 @@ export default function Dashboard(props) {
                         <MainGrid userData={userData} events={events}/>
                     </Stack>
                 </Box></>: <></>}
-                {page == "events" ? <><Box
+                {page == "Past events" ? <><Box
                     component="main"
                     sx={{
                         flexGrow: 1,
@@ -110,7 +119,7 @@ export default function Dashboard(props) {
                         overflow: 'auto',
                     }}
                 >
-
+                    <Header page={page}/>
                     <Stack
                         spacing={2}
                         sx={{
@@ -120,7 +129,15 @@ export default function Dashboard(props) {
                             mt: { xs: 8, md: 0 },
                         }}
                     >
-                        
+                        <Grid container
+                            spacing={2}
+                            columns={12}
+                            sx={{ mb: (theme) => theme.spacing(2) }}
+                        >
+                            {events.map((event) => (
+                                <div style={{'margin-right': '20px', 'margin-bottom': '10px', 'margin-top': '10px'}}><EventCard event={event}/></div>
+                            ))}
+                        </Grid>
                     </Stack>
                 </Box></> : <></>}
             </Box>

@@ -21,11 +21,11 @@ const secondaryListItems = [
     { text: 'Feedback', icon: <HelpRoundedIcon /> },
 ];
 
-export default function MenuContent({setPage}) {
+export default function MenuContent({setPage, page}) {
 
     const mainListItems = [
-        { text: 'Home', icon: <HomeRoundedIcon />, onClick: () => setPage("home") },
-        { text: 'Past events', icon: <AnalyticsRoundedIcon />, onClick: () => setPage("events") },
+        { text: 'Home', icon: <HomeRoundedIcon />, onClick: () => setPage("Home") },
+        { text: 'Past events', icon: <AnalyticsRoundedIcon />, onClick: () => setPage("Past events") },
         // { text: 'Team', icon: <PeopleRoundedIcon /> },
     ];
 
@@ -34,7 +34,7 @@ export default function MenuContent({setPage}) {
             <List dense>
                 {mainListItems.map((item, index) => (
                     <ListItem key={index} disablePadding sx={{ display: 'block' }} onClick={item.onClick}>
-                        <ListItemButton selected={index === 0}>
+                        <ListItemButton selected={item.text == page}>
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.text} />
                         </ListItemButton>

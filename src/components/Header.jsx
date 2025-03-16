@@ -8,7 +8,7 @@ import ColorModeIconDropdown from '../shared-theme/ColorModeIconDropdown';
 
 import Search from './Weather.jsx';
 
-export default function Header() {
+export default function Header({page}) {
     return (
         <Stack
             direction="row"
@@ -22,7 +22,7 @@ export default function Header() {
             }}
             spacing={2}
         >
-            <NavbarBreadcrumbs />
+            <NavbarBreadcrumbs page={page}/>
             <Stack direction="row" sx={{ gap: 1 }}>
                 <Search />
                 <CustomDatePicker />
