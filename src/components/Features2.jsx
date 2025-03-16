@@ -13,7 +13,7 @@ import EdgesensorHighRoundedIcon from '@mui/icons-material/EdgesensorHighRounded
 import ViewQuiltRoundedIcon from '@mui/icons-material/ViewQuiltRounded';
 
 // Import your local image
-import backgroundImg from 'C:\\Users\\Manu21\\Desktop\\ITFEST-2025\\src\\assets\\dash.jpg'; // adjust this path accordingly
+import backgroundImg from '/src/assets/dash.jpg'; // adjust this path accordingly
 
 const items = [
     {
