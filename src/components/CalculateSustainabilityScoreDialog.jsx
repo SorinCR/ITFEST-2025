@@ -11,28 +11,31 @@ import {
     Step,
     StepLabel,
     Box,
+    Card,
+    CardContent,
     MenuItem,
     FormControl,
     InputLabel,
-    Select,
     Typography,
     IconButton,
     Popover,
-    Slider,
-    Switch,
-    FormControlLabel,
-    Accordion,
-    AccordionSummary,
-    AccordionDetails,
     RadioGroup,
-    FormControlLabel as RadioFormControlLabel,
+    FormControlLabel,
     Radio,
     Checkbox,
     Autocomplete,
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    Alert,
+    List,
+    ListItem,
+    ListItemText,
+    Fade,
 } from "@mui/material";
 import { Calendar, MapPin, Info, ChevronDown } from "lucide-react";
 
-// Updated steps.
+// Define steps.
 const steps = [
     "Event Overview",
     "Sustainability & Environmental Impact",
@@ -43,47 +46,47 @@ const steps = [
 // Predefined clusters for built‑in metrics.
 const metricClusters = {
     energyConsumption: [
-        { label: "Low (<300 kWh)", value: "low", bonus: 5 },
+        { label: "Low (<300 kWh) – ideal", value: "low", bonus: 5 },
         { label: "Medium (300-700 kWh)", value: "medium", bonus: 3 },
         { label: "High (>700 kWh)", value: "high", bonus: 1 },
     ],
     renewableEnergyUsage: [
-        { label: "High (>70%)", value: "high", bonus: 5 },
+        { label: "High (>70%) – excellent", value: "high", bonus: 5 },
         { label: "Medium (40-70%)", value: "medium", bonus: 3 },
         { label: "Low (<40%)", value: "low", bonus: 1 },
     ],
     waterConsumption: [
-        { label: "Low (<3000 liters)", value: "low", bonus: 5 },
+        { label: "Low (<3000 liters) – efficient", value: "low", bonus: 5 },
         { label: "Medium (3000-7000 liters)", value: "medium", bonus: 3 },
         { label: "High (>7000 liters)", value: "high", bonus: 1 },
     ],
     wasteDiversion: [
-        { label: "High (>80%)", value: "high", bonus: 5 },
+        { label: "High (>80%) – strong diversion", value: "high", bonus: 5 },
         { label: "Medium (50-80%)", value: "medium", bonus: 3 },
         { label: "Low (<50%)", value: "low", bonus: 1 },
     ],
     recyclingRate: [
-        { label: "High (>80%)", value: "high", bonus: 5 },
+        { label: "High (>80%) – excellent", value: "high", bonus: 5 },
         { label: "Medium (50-80%)", value: "medium", bonus: 3 },
         { label: "Low (<50%)", value: "low", bonus: 1 },
     ],
     foodWaste: [
-        { label: "Low (<50 kg)", value: "low", bonus: 5 },
+        { label: "Low (<50 kg) – minimal waste", value: "low", bonus: 5 },
         { label: "Medium (50-150 kg)", value: "medium", bonus: 3 },
         { label: "High (>150 kg)", value: "high", bonus: 1 },
     ],
     transportationEmissions: [
-        { label: "Low (<100 kg CO₂)", value: "low", bonus: 5 },
+        { label: "Low (<100 kg CO₂) – sustainable travel", value: "low", bonus: 5 },
         { label: "Medium (100-300 kg CO₂)", value: "medium", bonus: 3 },
         { label: "High (>300 kg CO₂)", value: "high", bonus: 1 },
     ],
     carbonOffsetting: [
-        { label: "High (>50%)", value: "high", bonus: 5 },
+        { label: "High (>50%) – proactive offsetting", value: "high", bonus: 5 },
         { label: "Medium (20-50%)", value: "medium", bonus: 3 },
         { label: "Low (<20%)", value: "low", bonus: 1 },
     ],
     localSourcing: [
-        { label: "High (>70%)", value: "high", bonus: 5 },
+        { label: "High (>70%) – very sustainable", value: "high", bonus: 5 },
         { label: "Medium (40-70%)", value: "medium", bonus: 3 },
         { label: "Low (<40%)", value: "low", bonus: 1 },
     ],
@@ -94,7 +97,55 @@ const metricClusters = {
     ],
 };
 
-// InfoPopover component: clickable info icon.
+// Venue Type Options for interactive selection.
+const venueTypeOptions = [
+    { label: "Indoor", value: "Indoor" },
+    { label: "Outdoor", value: "Outdoor" },
+    { label: "Virtual", value: "Virtual" },
+    { label: "Hybrid", value: "Hybrid" },
+];
+
+// A custom interactive dropdown component.
+const InteractiveOptionSelect = ({ options, value, onChange, label }) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const handleClick = (event) => setAnchorEl(event.currentTarget);
+    const handleClose = () => setAnchorEl(null);
+    const open = Boolean(anchorEl);
+
+    const selectedOption = options.find((opt) => opt.value === value);
+
+    return (
+        <div>
+            <Button variant="outlined" onClick={handleClick} fullWidth>
+                {selectedOption ? selectedOption.label : label || "Select an Option"}
+            </Button>
+            <Popover
+                open={open}
+                anchorEl={anchorEl}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                transformOrigin={{ vertical: "top", horizontal: "left" }}
+            >
+                <List>
+                    {options.map((option, index) => (
+                        <ListItem
+                            button
+                            key={index}
+                            onClick={() => {
+                                onChange(option.value);
+                                handleClose();
+                            }}
+                        >
+                            <ListItemText primary={option.label} />
+                        </ListItem>
+                    ))}
+                </List>
+            </Popover>
+        </div>
+    );
+};
+
+// InfoPopover component for additional details.
 const InfoPopover = ({ infoText }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -120,9 +171,9 @@ const InfoPopover = ({ infoText }) => {
     );
 };
 
-// LabeledField component.
+// LabeledField displays a label with an info icon.
 const LabeledField = ({ label, infoText }) => (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
+    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
         <Typography variant="subtitle1" sx={{ mr: 0.5 }}>
             {label}
         </Typography>
@@ -130,185 +181,98 @@ const LabeledField = ({ label, infoText }) => (
     </Box>
 );
 
-// Reusable MetricInput component for built-in metrics.
+// Updated MetricInput component using InteractiveOptionSelect.
 const MetricInput = ({
                          metricKey,
                          label,
                          infoText,
-                         sliderMin,
-                         sliderMax,
                          metricState,
                          onMetricChange,
                          clusters,
+                         updateAnswerJson,
                      }) => {
-    const handleModeChange = (e) => {
-        onMetricChange(metricKey, { ...metricState, mode: e.target.value });
-    };
-
-    const handleCustomChange = (e, value) => {
-        onMetricChange(metricKey, { ...metricState, custom: value });
-    };
-
-    const handleClusterChange = (e) => {
-        onMetricChange(metricKey, { ...metricState, cluster: e.target.value });
+    const handleOptionChange = (selectedValue) => {
+        const newState = { ...metricState, cluster: selectedValue };
+        onMetricChange(metricKey, newState);
+        const selectedOption = clusters.find((opt) => opt.value === selectedValue);
+        const allocatedPoints = selectedOption ? selectedOption.bonus : 0;
+        updateAnswerJson(metricKey, allocatedPoints);
     };
 
     return (
-        <Box sx={{ mb: 2 }}>
-            <LabeledField label={label} infoText={infoText} />
-            <RadioGroup
-                row
-                value={metricState.mode}
-                onChange={handleModeChange}
-                sx={{ mb: 1 }}
-            >
-                <RadioFormControlLabel value="custom" control={<Radio />} label="Custom" />
-                <RadioFormControlLabel value="cluster" control={<Radio />} label="Group" />
-            </RadioGroup>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <Typography variant="caption">
-                    Choose Numeric if you can provide a measurable value; choose Group to select a predefined range.
+        <Card variant="outlined" sx={{ mb: 2 }}>
+            <CardContent>
+                <Typography variant="h6" gutterBottom>
+                    {label}
                 </Typography>
-            </Box>
-            {metricState.mode === "custom" ? (
-                <Slider
-                    value={metricState.custom}
-                    onChange={handleCustomChange}
-                    min={sliderMin}
-                    max={sliderMax}
-                    valueLabelDisplay="auto"
-                />
-            ) : (
-                <FormControl fullWidth>
-                    <InputLabel>Group</InputLabel>
-                    <Select value={metricState.cluster} onChange={handleClusterChange}>
-                        {clusters.map((option, idx) => (
-                            <MenuItem key={idx} value={option.value}>
-                                {option.label}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-            )}
-        </Box>
-    );
-};
-
-// Reusable CustomMetricInput component for extra metrics.
-const CustomMetricInput = ({ metric, onChange }) => {
-    const handleTypeChange = (e) => {
-        onChange({ ...metric, type: e.target.value });
-    };
-
-    const handleNumericChange = (e, value) => {
-        onChange({ ...metric, numericValue: value });
-    };
-
-    const handleTextChange = (e) => {
-        onChange({ ...metric, textValue: e.target.value });
-    };
-
-    return (
-        <Box sx={{ mb: 2 }}>
-            <TextField
-                label="Metric Label"
-                variant="outlined"
-                fullWidth
-                margin="normal"
-                value={metric.label}
-                onChange={(e) => onChange({ ...metric, label: e.target.value })}
-            />
-            <RadioGroup row value={metric.type} onChange={handleTypeChange} sx={{ mb: 1 }}>
-                <RadioFormControlLabel value="numeric" control={<Radio />} label="Numeric" />
-                <RadioFormControlLabel value="text" control={<Radio />} label="Text" />
-            </RadioGroup>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                <Typography variant="caption">
-                    Numeric: Provide a measurable number (e.g., 75). Text: Describe your sustainable strategy.
+                <LabeledField label="Info" infoText={infoText} />
+                <Typography variant="body2" color="textSecondary" gutterBottom>
+                    Please select one of the options.
                 </Typography>
-            </Box>
-            {metric.type === "numeric" ? (
-                <Slider
-                    value={metric.numericValue}
-                    onChange={handleNumericChange}
-                    min={0}
-                    max={100}
-                    valueLabelDisplay="auto"
+                <InteractiveOptionSelect
+                    options={clusters}
+                    value={metricState.cluster}
+                    onChange={handleOptionChange}
+                    label="Select an Option"
                 />
-            ) : (
-                <TextField
-                    label="Describe Sustainable Strategy"
-                    variant="outlined"
-                    fullWidth
-                    multiline
-                    rows={3}
-                    value={metric.textValue}
-                    onChange={handleTextChange}
-                />
-            )}
-        </Box>
+            </CardContent>
+        </Card>
     );
 };
 
 const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
-    // Updated form data state to include new questionnaire fields (Section 1).
+    // Main form state.
     const [formData, setFormData] = useState({
-        eventName: "My Event",
+        eventName: "",
         eventDate: "",
         eventLocation: "",
-        // New fields from Section 1:
-        approximateAttendees: "",
-        eventDuration: "",
-        eventLocationType: "",
-        eventTiming: "",
-        venueType: "",
-        sustainableCatering: true,
-        digitalIntegration: true,
+        approximateAttendees: "", // Options: lessThan50, 50-200, 200-1000, moreThan1000
+        eventDuration: "", // Options: fewHours, oneDay, multipleDays, overAWeek
+        venueType: "", // Options: Indoor, Outdoor, Virtual, Hybrid
+        eventTiming: "", // Options: daylight, night, mixed
     });
 
-    // Built-in metric inputs state.
+    // Built‑in metric inputs state.
     const [metricInputs, setMetricInputs] = useState({
-        energyConsumption: { mode: "custom", custom: 500, cluster: "" },
-        renewableEnergyUsage: { mode: "custom", custom: 50, cluster: "" },
-        waterConsumption: { mode: "custom", custom: 5000, cluster: "" },
-        wasteDiversion: { mode: "custom", custom: 50, cluster: "" },
-        recyclingRate: { mode: "custom", custom: 50, cluster: "" },
-        foodWaste: { mode: "custom", custom: 100, cluster: "" },
-        transportationEmissions: { mode: "custom", custom: 250, cluster: "" },
-        carbonOffsetting: { mode: "custom", custom: 0, cluster: "" },
-        localSourcing: { mode: "custom", custom: 0, cluster: "" },
-        greenProcurement: { mode: "custom", custom: 5, cluster: "" },
+        energyConsumption: { cluster: "" },
+        renewableEnergyUsage: { cluster: "" },
+        waterConsumption: { cluster: "" },
+        wasteDiversion: { cluster: "" },
+        recyclingRate: { cluster: "" },
+        foodWaste: { cluster: "" },
+        transportationEmissions: { cluster: "" },
+        carbonOffsetting: { cluster: "" },
+        localSourcing: { cluster: "" },
+        greenProcurement: { cluster: "" },
     });
 
-    // Custom metrics state.
-    const [customMetrics, setCustomMetrics] = useState([]);
-
-    // New state for Environmental Impact questionnaire (Section 2).
+    // Environmental Impact state.
     const [envImpact, setEnvImpact] = useState({
-        energySource: "",
-        energyEfficientPractices: [],
-        transportationMode: "",
-        transportationMeasures: [],
-        wasteManagementPractices: [],
-        waterManagement: "",
-        sustainableMaterials: "",
+        energySource: "", // Options: 100Renewable, mostlyRenewable, predominantlyConventional, dieselGenerators
+        energyEfficientPractices: [], // Options: LED, SmartHVAC, EnergyManagement, NaturalLighting, None
     });
 
-    // New state for Governance & Digital Data (Sections 3 & 4).
+    // Governance & Digital state.
     const [governanceData, setGovernanceData] = useState({
-        sustainabilityPolicy: "",
-        sustainabilityReporting: "",
-        vendorEvaluation: "",
-        independentAudit: "",
-        digitalPractices: "",
-        dataCollection: "",
-        performanceReviewFrequency: "",
+        sustainabilityPolicy: "", // Options: fullyDocumented, informal, no
+        sustainabilityReporting: "", // Options: yesFramework, adHoc, noReporting
+        vendorEvaluation: "", // Options: formalEvaluation, occasional, no
+        independentAudit: "", // Options: yesAudit, planned, no
+        digitalPractices: "", // Options: entirelyDigital, mixed, primarilyPaper
+        dataCollection: "", // Options: comprehensiveDigital, manualTracking, noData
+        performanceReviewFrequency: "", // Options: afterEveryEvent, periodically, rarely
     });
 
+    // JSON state for storing only built‑in metrics’ allocated points.
+    const [answersJson, setAnswersJson] = useState({ builtIn: {} });
+
+    // Other state.
     const [activeStep, setActiveStep] = useState(0);
     const [calculatedScore, setCalculatedScore] = useState(null);
+    const [submissionStatus, setSubmissionStatus] = useState("");
+    const [validationErrors, setValidationErrors] = useState([]);
 
-    // For location autocomplete, we simulate fetching suggestions.
+    // Location autocomplete state.
     const [locationOptions, setLocationOptions] = useState([]);
     const [locationInput, setLocationInput] = useState("");
 
@@ -327,12 +291,12 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
         setLocationOptions(filtered);
     }, [locationInput]);
 
-    // Update basic form data.
+    // Update form data.
     const handleFormChange = (name, value) => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Update built-in metric state.
+    // Update built‑in metric state.
     const handleMetricChange = (metricKey, newValue) => {
         setMetricInputs((prev) => ({ ...prev, [metricKey]: newValue }));
     };
@@ -342,123 +306,507 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
         setEnvImpact((prev) => ({ ...prev, [name]: value }));
     };
 
-    // For checkboxes in envImpact (multi select)
-    const handleEnvImpactCheckboxChange = (name, option) => {
-        setEnvImpact((prev) => {
-            const current = prev[name] || [];
-            if (current.includes(option)) {
-                return { ...prev, [name]: current.filter((item) => item !== option) };
-            } else {
-                return { ...prev, [name]: [...current, option] };
-            }
-        });
-    };
-
     // Update Governance Data state.
     const handleGovernanceChange = (name, value) => {
         setGovernanceData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Add a new custom metric.
-    const addCustomMetric = () => {
-        setCustomMetrics([
-            ...customMetrics,
-            {
-                id: Date.now(),
-                label: "Custom Metric",
-                type: "numeric",
-                numericValue: 50,
-                textValue: "",
-            },
-        ]);
+    // For checkboxes.
+    const handleEnvImpactCheckboxChange = (name, option) => {
+        setEnvImpact((prev) => {
+            const current = prev[name] || [];
+            return current.includes(option)
+                ? { ...prev, [name]: current.filter((item) => item !== option) }
+                : { ...prev, [name]: [...current, option] };
+        });
     };
 
-    // Compute score for a built-in metric.
-    // reverse=true means lower is better.
-    const getMetricScore = (metricKey, maxValue, reverse = true) => {
+    // Compute allocatedPoints for a built‑in metric.
+    const getMetricScore = (metricKey) => {
         const metric = metricInputs[metricKey];
-        if (metric.mode === "custom") {
-            return reverse
-                ? ((maxValue - metric.custom) / maxValue) * 5
-                : (metric.custom / maxValue) * 5;
-        } else {
-            const clustersForMetric = metricClusters[metricKey] || [];
-            const selected = clustersForMetric.find((opt) => opt.value === metric.cluster);
-            return selected ? selected.bonus : 0;
-        }
+        const clustersForMetric = metricClusters[metricKey] || [];
+        const selected = clustersForMetric.find((opt) => opt.value === metric.cluster);
+        return selected ? selected.bonus : 0;
     };
 
-    // Calculate overall sustainability score.
+    // ===== Additional Scoring Functions =====
+    // Section 1: Event Overview
+    const calculateOverviewScore = () => {
+        let score = 0;
+        // Approximate Attendees
+        switch (formData.approximateAttendees) {
+            case "lessThan50":
+                score += 5;
+                break;
+            case "50-200":
+                score += 3;
+                break;
+            case "200-1000":
+                score += 1;
+                break;
+            case "moreThan1000":
+                score += 0;
+                break;
+            default:
+                break;
+        }
+        // Event Duration
+        switch (formData.eventDuration) {
+            case "fewHours":
+                score += 5;
+                break;
+            case "oneDay":
+                score += 3;
+                break;
+            case "multipleDays":
+                score += 1;
+                break;
+            case "overAWeek":
+                score += 0;
+                break;
+            default:
+                break;
+        }
+        // Venue Type
+        // Scoring based on the venue type selection.
+        if (formData.venueType === "Outdoor" || formData.venueType === "Virtual") score += 5;
+        else if (formData.venueType === "Hybrid") score += 4;
+        else if (formData.venueType === "Indoor") score += 3;
+        // Event Timing
+        switch (formData.eventTiming) {
+            case "daylight":
+                score += 5;
+                break;
+            case "mixed":
+                score += 4;
+                break;
+            case "night":
+                score += 2;
+                break;
+            default:
+                break;
+        }
+        return score;
+    };
+
+    // Section 2: Environmental Impact (non built‑in)
+    const calculateEnvImpactScore = () => {
+        let score = 0;
+        // Primary Energy Source
+        switch (envImpact.energySource) {
+            case "100Renewable":
+                score += 5;
+                break;
+            case "mostlyRenewable":
+                score += 3;
+                break;
+            case "predominantlyConventional":
+                score += 1;
+                break;
+            case "dieselGenerators":
+                score += 0;
+                break;
+            default:
+                break;
+        }
+        // Energy‑Efficient Practices: if “None” is selected, no points; otherwise, add 1 per practice.
+        if (!envImpact.energyEfficientPractices.includes("None")) {
+            score += envImpact.energyEfficientPractices.length;
+        }
+        return score;
+    };
+
+    // Section 3: Governance & Digital
+    const calculateGovernanceScore = () => {
+        let score = 0;
+        // Sustainability Policy
+        switch (governanceData.sustainabilityPolicy) {
+            case "fullyDocumented":
+                score += 5;
+                break;
+            case "informal":
+                score += 3;
+                break;
+            case "no":
+                score += 0;
+                break;
+            default:
+                break;
+        }
+        // Sustainability Reporting
+        switch (governanceData.sustainabilityReporting) {
+            case "yesFramework":
+                score += 5;
+                break;
+            case "adHoc":
+                score += 3;
+                break;
+            case "noReporting":
+                score += 0;
+                break;
+            default:
+                break;
+        }
+        // Vendor Evaluation
+        switch (governanceData.vendorEvaluation) {
+            case "formalEvaluation":
+                score += 5;
+                break;
+            case "occasional":
+                score += 3;
+                break;
+            case "no":
+                score += 0;
+                break;
+            default:
+                break;
+        }
+        // Independent Audit
+        switch (governanceData.independentAudit) {
+            case "yesAudit":
+                score += 5;
+                break;
+            case "planned":
+                score += 3;
+                break;
+            case "no":
+                score += 0;
+                break;
+            default:
+                break;
+        }
+        // Digital Practices
+        switch (governanceData.digitalPractices) {
+            case "entirelyDigital":
+                score += 5;
+                break;
+            case "mixed":
+                score += 3;
+                break;
+            case "primarilyPaper":
+                score += 0;
+                break;
+            default:
+                break;
+        }
+        // Data Collection
+        switch (governanceData.dataCollection) {
+            case "comprehensiveDigital":
+                score += 5;
+                break;
+            case "manualTracking":
+                score += 3;
+                break;
+            case "noData":
+                score += 0;
+                break;
+            default:
+                break;
+        }
+        // Performance Review Frequency
+        switch (governanceData.performanceReviewFrequency) {
+            case "afterEveryEvent":
+                score += 5;
+                break;
+            case "periodically":
+                score += 3;
+                break;
+            case "rarely":
+                score += 0;
+                break;
+            default:
+                break;
+        }
+        return score;
+    };
+
+    // Combine all sections with built‑in metrics.
     const calculateScore = () => {
-        const maxValues = {
-            energyConsumption: 1000,
-            renewableEnergyUsage: 100,
-            waterConsumption: 10000,
-            wasteDiversion: 100,
-            recyclingRate: 100,
-            foodWaste: 200,
-            transportationEmissions: 500,
-            carbonOffsetting: 100,
-            localSourcing: 100,
-            greenProcurement: 10,
+        const builtInScore =
+            getMetricScore("energyConsumption") +
+            getMetricScore("renewableEnergyUsage") +
+            getMetricScore("waterConsumption") +
+            getMetricScore("wasteDiversion") +
+            getMetricScore("recyclingRate") +
+            getMetricScore("foodWaste") +
+            getMetricScore("transportationEmissions") +
+            getMetricScore("carbonOffsetting") +
+            getMetricScore("localSourcing") +
+            getMetricScore("greenProcurement");
+
+        const overviewScore = calculateOverviewScore();
+        const envImpactScore = calculateEnvImpactScore();
+        const governanceScore = calculateGovernanceScore();
+
+        const totalPoints = builtInScore + overviewScore + envImpactScore + governanceScore;
+
+        // Assuming maximum possible is 114 points,
+        // Scale the overall score to a 0-10 range:
+        const sustainabilityFactor = (totalPoints / 114) * 10;
+        return { sustainabilityScore: sustainabilityFactor.toFixed(1), totalPoints };
+    };
+
+    // Build JSON object with all measured metrics and allocated points (nested structure).
+    const evaluateMetrics = () => {
+        // Overview scoring details
+        const attendeesPoints =
+            formData.approximateAttendees === "lessThan50"
+                ? 5
+                : formData.approximateAttendees === "50-200"
+                    ? 3
+                    : formData.approximateAttendees === "200-1000"
+                        ? 1
+                        : 0;
+        const durationPoints =
+            formData.eventDuration === "fewHours"
+                ? 5
+                : formData.eventDuration === "oneDay"
+                    ? 3
+                    : formData.eventDuration === "multipleDays"
+                        ? 1
+                        : 0;
+        const venuePoints =
+            formData.venueType === "Outdoor" || formData.venueType === "Virtual"
+                ? 5
+                : formData.venueType === "Hybrid"
+                    ? 4
+                    : formData.venueType === "Indoor"
+                        ? 3
+                        : 0;
+        const timingPoints =
+            formData.eventTiming === "daylight"
+                ? 5
+                : formData.eventTiming === "mixed"
+                    ? 4
+                    : formData.eventTiming === "night"
+                        ? 2
+                        : 0;
+
+        // Environmental Impact details
+        const energySourcePoints =
+            envImpact.energySource === "100Renewable"
+                ? 5
+                : envImpact.energySource === "mostlyRenewable"
+                    ? 3
+                    : envImpact.energySource === "predominantlyConventional"
+                        ? 1
+                        : 0;
+        const energyEfficientPoints = envImpact.energyEfficientPractices.includes("None")
+            ? 0
+            : envImpact.energyEfficientPractices.length;
+
+        // Governance details
+        const policyPoints =
+            governanceData.sustainabilityPolicy === "fullyDocumented"
+                ? 5
+                : governanceData.sustainabilityPolicy === "informal"
+                    ? 3
+                    : 0;
+        const reportingPoints =
+            governanceData.sustainabilityReporting === "yesFramework"
+                ? 5
+                : governanceData.sustainabilityReporting === "adHoc"
+                    ? 3
+                    : 0;
+        const vendorPoints =
+            governanceData.vendorEvaluation === "formalEvaluation"
+                ? 5
+                : governanceData.vendorEvaluation === "occasional"
+                    ? 3
+                    : 0;
+        const auditPoints =
+            governanceData.independentAudit === "yesAudit"
+                ? 5
+                : governanceData.independentAudit === "planned"
+                    ? 3
+                    : 0;
+        const digitalPoints =
+            governanceData.digitalPractices === "entirelyDigital"
+                ? 5
+                : governanceData.digitalPractices === "mixed"
+                    ? 3
+                    : 0;
+        const dataCollectionPoints =
+            governanceData.dataCollection === "comprehensiveDigital"
+                ? 5
+                : governanceData.dataCollection === "manualTracking"
+                    ? 3
+                    : 0;
+        const reviewPoints =
+            governanceData.performanceReviewFrequency === "afterEveryEvent"
+                ? 5
+                : governanceData.performanceReviewFrequency === "periodically"
+                    ? 3
+                    : 0;
+
+        return {
+            builtIn: { ...answersJson.builtIn },
+            overview: {
+                approximateAttendees: { points: attendeesPoints },
+                eventDuration: { points: durationPoints },
+                venueType: { points: venuePoints },
+                eventTiming: { points: timingPoints },
+            },
+            envImpact: {
+                energySource: { points: energySourcePoints },
+                energyEfficientPractices: { points: energyEfficientPoints },
+            },
+            governance: {
+                sustainabilityPolicy: { points: policyPoints },
+                sustainabilityReporting: { points: reportingPoints },
+                vendorEvaluation: { points: vendorPoints },
+                independentAudit: { points: auditPoints },
+                digitalPractices: { points: digitalPoints },
+                dataCollection: { points: dataCollectionPoints },
+                performanceReviewFrequency: { points: reviewPoints },
+            },
         };
+    };
 
-        const energyScore = getMetricScore("energyConsumption", maxValues.energyConsumption, true);
-        const renewableScore = getMetricScore("renewableEnergyUsage", maxValues.renewableEnergyUsage, false);
-        const waterScore = getMetricScore("waterConsumption", maxValues.waterConsumption, true);
-        const wasteScore = getMetricScore("wasteDiversion", maxValues.wasteDiversion, false);
-        const recyclingScore = getMetricScore("recyclingRate", maxValues.recyclingRate, false);
-        const foodWasteScore = getMetricScore("foodWaste", maxValues.foodWaste, true);
-        const transportScore = getMetricScore("transportationEmissions", maxValues.transportationEmissions, true);
-        const carbonScore = getMetricScore("carbonOffsetting", maxValues.carbonOffsetting, false);
-        const localScore = getMetricScore("localSourcing", maxValues.localSourcing, false);
-        const procurementScore = getMetricScore("greenProcurement", maxValues.greenProcurement, false);
+    // Build a flat JSON object with only metric names and allocated points.
+    const buildFlatMetricsJson = () => {
+        const flatMetrics = {};
+        const metricsEvaluation = evaluateMetrics();
 
-        const fixedScore =
-            energyScore +
-            renewableScore +
-            waterScore +
-            wasteScore +
-            recyclingScore +
-            foodWasteScore +
-            transportScore +
-            carbonScore +
-            localScore +
-            procurementScore;
+        // Flatten builtIn metrics (already numbers).
+        Object.keys(metricsEvaluation.builtIn).forEach((key) => {
+            flatMetrics[key] = metricsEvaluation.builtIn[key];
+        });
+        // Flatten overview metrics.
+        Object.keys(metricsEvaluation.overview).forEach((key) => {
+            flatMetrics[key] = metricsEvaluation.overview[key].points;
+        });
+        // Flatten Environmental Impact metrics.
+        Object.keys(metricsEvaluation.envImpact).forEach((key) => {
+            flatMetrics[key] = metricsEvaluation.envImpact[key].points;
+        });
+        // Flatten Governance metrics.
+        Object.keys(metricsEvaluation.governance).forEach((key) => {
+            flatMetrics[key] = metricsEvaluation.governance[key].points;
+        });
+        // Optionally, include overall totals.
+        const { totalPoints, sustainabilityScore } = calculateScore();
+        flatMetrics.totalPoints = totalPoints;
+        flatMetrics.sustainabilityFactor = Number(sustainabilityScore);
+        return flatMetrics;
+    };
 
-        // For extra custom metrics: if type numeric, use normalized value; if text, add fixed bonus of 2 if non-empty.
-        const customMetricsScore = customMetrics.reduce((acc, metric) => {
-            if (metric.type === "numeric") {
-                return acc + ((parseFloat(metric.numericValue) / 100) * 5);
-            } else {
-                return acc + (metric.textValue.trim() !== "" ? 2 : 0);
+    // Update answersJson state for built‑in metrics.
+    const updateAnswerJson = (key, allocatedPoints) => {
+        setAnswersJson((prev) => ({
+            ...prev,
+            builtIn: { ...prev.builtIn, [key]: allocatedPoints },
+        }));
+    };
+
+    // Validate required fields for current step.
+    const validateCurrentStep = () => {
+        const errors = [];
+        if (activeStep === 0) {
+            if (!formData.eventName) errors.push("Event Name is required.");
+            if (!formData.eventDate) errors.push("Event Date is required.");
+            if (!formData.eventLocation) errors.push("Event Location is required.");
+            if (!formData.approximateAttendees)
+                errors.push("Number of Attendees is required.");
+            if (!formData.eventDuration)
+                errors.push("Event Duration is required.");
+            if (!formData.eventTiming) errors.push("Event Timing is required.");
+            if (!formData.venueType) errors.push("Venue Type is required.");
+        } else if (activeStep === 1) {
+            // Validate built‑in metrics.
+            Object.keys(metricInputs).forEach((key) => {
+                if (!metricInputs[key].cluster) {
+                    errors.push(`${key} is unanswered.`);
+                }
+            });
+            // Validate Environmental Impact: Primary Source of Energy is required.
+            if (!envImpact.energySource) {
+                errors.push("Primary Source of Energy is required.");
             }
-        }, 0);
-
-        // Fixed metrics maximum: 10 metrics * 5 = 50.
-        const maxPoints = 50 + customMetrics.length * 5;
-        const totalScore = ((fixedScore + customMetricsScore) / maxPoints) * 10;
-        return Math.min(Math.max(totalScore, 0), 10).toFixed(1);
+        } else if (activeStep === 2) {
+            // Validate Governance & Digital questions.
+            if (!governanceData.sustainabilityPolicy)
+                errors.push("Sustainability Policy is required.");
+            if (!governanceData.sustainabilityReporting)
+                errors.push("Sustainability Reporting is required.");
+            if (!governanceData.vendorEvaluation)
+                errors.push("Vendor Evaluation is required.");
+            if (!governanceData.independentAudit)
+                errors.push("Independent Audit is required.");
+            if (!governanceData.digitalPractices)
+                errors.push("Digital Practices is required.");
+            if (!governanceData.dataCollection)
+                errors.push("Data Collection is required.");
+            if (!governanceData.performanceReviewFrequency)
+                errors.push("Performance Review Frequency is required.");
+        }
+        return errors;
     };
 
     const handleNext = () => {
+        const errors = validateCurrentStep();
+        if (errors.length > 0) {
+            setValidationErrors(errors);
+            return;
+        }
+        setValidationErrors([]);
         if (activeStep === steps.length - 1) {
-            const score = calculateScore();
-            setCalculatedScore(score);
+            // On final step, calculate overall score and update state.
+            const { sustainabilityScore } = calculateScore();
+            setCalculatedScore(sustainabilityScore);
+            submitDataToMongo();
         } else {
             setActiveStep((prev) => prev + 1);
         }
     };
 
-    const handleBack = () => setActiveStep((prev) => prev - 1);
+    const handleBack = () => {
+        setValidationErrors([]);
+        setActiveStep((prev) => prev - 1);
+    };
+
+    // Submit data to backend.
+    const submitDataToMongo = async () => {
+        // Build the flat metrics JSON with only the metric measured and the allocated points.
+        const flatMetricsJson = buildFlatMetricsJson();
+        // Log the final flat JSON for debugging.
+        console.log("Final flat metrics JSON before submission:", JSON.stringify(flatMetricsJson, null, 2));
+
+        const dataToSend = {
+            metrics: flatMetricsJson,
+            submittedAt: new Date(),
+        };
+
+        try {
+            const response = await fetch("/api/events", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dataToSend),
+            });
+            if (response.ok) {
+                setSubmissionStatus("Data successfully submitted!");
+            } else {
+                setSubmissionStatus("Submission failed.");
+            }
+        } catch (error) {
+            console.error("Submission error:", error);
+            setSubmissionStatus("Error submitting data.");
+        }
+    };
 
     // Render content for each step.
     const renderStepContent = (step) => {
         switch (step) {
-            // Step 0: Event Overview (Basic info + Section 1 Questionnaire)
             case 0:
                 return (
-                    <Box component="form" sx={{ mt: 2 }} noValidate autoComplete="off">
+                    <Box sx={{ mt: 2 }}>
+                        {validationErrors.length > 0 && (
+                            <Alert severity="warning" sx={{ mb: 2 }}>
+                                {validationErrors.map((err, idx) => (
+                                    <div key={idx}>{err}</div>
+                                ))}
+                            </Alert>
+                        )}
                         <TextField
                             label="Event Name"
                             name="eventName"
@@ -509,33 +857,41 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                                 />
                             )}
                         />
+                        {/* Venue Type selection now uses the interactive dropdown */}
+                        <Typography variant="subtitle1" sx={{ mt: 2 }}>
+                            Venue Type
+                        </Typography>
+                        <InteractiveOptionSelect
+                            options={venueTypeOptions}
+                            value={formData.venueType}
+                            onChange={(selectedValue) => handleFormChange("venueType", selectedValue)}
+                            label="Select Venue Type"
+                        />
                         <Box sx={{ mt: 2 }}>
                             <Typography variant="subtitle1">Approximate Number of Attendees</Typography>
                             <RadioGroup
                                 value={formData.approximateAttendees}
-                                onChange={(e) =>
-                                    handleFormChange("approximateAttendees", e.target.value)
-                                }
+                                onChange={(e) => handleFormChange("approximateAttendees", e.target.value)}
                             >
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="lessThan50"
                                     control={<Radio />}
-                                    label="Less than 50"
+                                    label="Less than 50 (minimal resource use – 5 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="50-200"
                                     control={<Radio />}
-                                    label="50 – 200"
+                                    label="50 – 200 (moderate impact – 3 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="200-1000"
                                     control={<Radio />}
-                                    label="200 – 1,000"
+                                    label="200 – 1,000 (higher impact – 1 point)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="moreThan1000"
                                     control={<Radio />}
-                                    label="More than 1,000"
+                                    label="More than 1,000 (highest impact – 0 points)"
                                 />
                             </RadioGroup>
                         </Box>
@@ -545,303 +901,192 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                                 value={formData.eventDuration}
                                 onChange={(e) => handleFormChange("eventDuration", e.target.value)}
                             >
-                                <RadioFormControlLabel
-                                    value="fewHours"
-                                    control={<Radio />}
-                                    label="A few hours"
-                                />
-                                <RadioFormControlLabel
-                                    value="oneDay"
-                                    control={<Radio />}
-                                    label="One full day"
-                                />
-                                <RadioFormControlLabel
-                                    value="multipleDays"
-                                    control={<Radio />}
-                                    label="Multiple days"
-                                />
-                                <RadioFormControlLabel
-                                    value="overAWeek"
-                                    control={<Radio />}
-                                    label="Over a week"
-                                />
+                                <FormControlLabel value="fewHours" control={<Radio />} label="A few hours (5 points)" />
+                                <FormControlLabel value="oneDay" control={<Radio />} label="One full day (3 points)" />
+                                <FormControlLabel value="multipleDays" control={<Radio />} label="Multiple days (1 point)" />
+                                <FormControlLabel value="overAWeek" control={<Radio />} label="Over a week (0 points)" />
                             </RadioGroup>
                         </Box>
                         <Box sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">Where is the event held?</Typography>
-                            <RadioGroup
-                                value={formData.eventLocationType}
-                                onChange={(e) =>
-                                    handleFormChange("eventLocationType", e.target.value)
-                                }
-                            >
-                                <RadioFormControlLabel
-                                    value="fullyOutdoor"
-                                    control={<Radio />}
-                                    label="Fully outdoor"
-                                />
-                                <RadioFormControlLabel
-                                    value="fullyIndoor"
-                                    control={<Radio />}
-                                    label="Fully indoor"
-                                />
-                                <RadioFormControlLabel
-                                    value="mixed"
-                                    control={<Radio />}
-                                    label="Mixed (indoor/outdoor)"
-                                />
-                            </RadioGroup>
-                        </Box>
-                        <Box sx={{ mt: 2 }}>
-                            <Typography variant="subtitle1">
-                                How is the event timed in relation to natural light?
-                            </Typography>
+                            <Typography variant="subtitle1">How is the event timed in relation to natural light?</Typography>
                             <RadioGroup
                                 value={formData.eventTiming}
                                 onChange={(e) => handleFormChange("eventTiming", e.target.value)}
                             >
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="daylight"
                                     control={<Radio />}
-                                    label="During daylight hours"
+                                    label="During daylight hours (optimal – 5 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="night"
                                     control={<Radio />}
-                                    label="At night"
+                                    label="At night (requires extra lighting – 2 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="mixed"
                                     control={<Radio />}
-                                    label="Mixed"
+                                    label="Mixed (moderate – 4 points)"
                                 />
                             </RadioGroup>
                         </Box>
-                        <FormControl fullWidth margin="normal" sx={{ mt: 2 }}>
-                            <InputLabel id="venue-type-label">Venue Type</InputLabel>
-                            <Select
-                                labelId="venue-type-label"
-                                label="Venue Type"
-                                name="venueType"
-                                value={formData.venueType}
-                                onChange={(e) => handleFormChange("venueType", e.target.value)}
-                            >
-                                <MenuItem value="Indoor">Indoor</MenuItem>
-                                <MenuItem value="Outdoor">Outdoor</MenuItem>
-                                <MenuItem value="Virtual">Virtual</MenuItem>
-                                <MenuItem value="Hybrid">Hybrid</MenuItem>
-                            </Select>
-                        </FormControl>
                     </Box>
                 );
-            // Step 1: Sustainability & Environmental Impact (Built‑in metrics + Section 2)
             case 1:
                 return (
                     <Box sx={{ mt: 2 }}>
-                        {/* Built‑in metrics accordions */}
+                        {validationErrors.length > 0 && (
+                            <Alert severity="warning" sx={{ mb: 2 }}>
+                                {validationErrors.map((err, idx) => (
+                                    <div key={idx}>{err}</div>
+                                ))}
+                            </Alert>
+                        )}
+                        <Typography variant="h5" sx={{ mb: 2 }}>
+                            Sustainability Metrics
+                        </Typography>
+                        {/* Built‑in Metrics */}
                         <Accordion>
                             <AccordionSummary expandIcon={<ChevronDown />}>
-                                <Typography variant="subtitle1">Resource Usage</Typography>
+                                <Typography variant="subtitle1">Built‑in Sustainability Metrics</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <MetricInput
                                     metricKey="energyConsumption"
                                     label="Energy Consumption (kWh)"
-                                    infoText="Estimate energy usage from equipment and duration using past bills or venue estimates."
-                                    sliderMin={0}
-                                    sliderMax={1000}
+                                    infoText="Estimate energy usage based on past bills or venue estimates."
                                     metricState={metricInputs.energyConsumption}
                                     onMetricChange={handleMetricChange}
                                     clusters={metricClusters.energyConsumption}
+                                    updateAnswerJson={updateAnswerJson}
                                 />
                                 <MetricInput
                                     metricKey="renewableEnergyUsage"
                                     label="Renewable Energy Usage (%)"
-                                    infoText="Percentage of energy from renewables. Check your provider’s breakdown."
-                                    sliderMin={0}
-                                    sliderMax={100}
+                                    infoText="Percentage of energy sourced from renewables."
                                     metricState={metricInputs.renewableEnergyUsage}
                                     onMetricChange={handleMetricChange}
                                     clusters={metricClusters.renewableEnergyUsage}
+                                    updateAnswerJson={updateAnswerJson}
                                 />
                                 <MetricInput
                                     metricKey="waterConsumption"
                                     label="Water Consumption (liters)"
-                                    infoText="Estimate water usage from catering and operations using vendor estimates."
-                                    sliderMin={0}
-                                    sliderMax={10000}
+                                    infoText="Estimate water usage from operations."
                                     metricState={metricInputs.waterConsumption}
                                     onMetricChange={handleMetricChange}
                                     clusters={metricClusters.waterConsumption}
+                                    updateAnswerJson={updateAnswerJson}
                                 />
-                            </AccordionDetails>
-                        </Accordion>
-                        <Accordion>
-                            <AccordionSummary expandIcon={<ChevronDown />}>
-                                <Typography variant="subtitle1">Waste Management</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
                                 <MetricInput
                                     metricKey="wasteDiversion"
                                     label="Waste Diversion (%)"
                                     infoText="Percentage of waste diverted from landfills."
-                                    sliderMin={0}
-                                    sliderMax={100}
                                     metricState={metricInputs.wasteDiversion}
                                     onMetricChange={handleMetricChange}
                                     clusters={metricClusters.wasteDiversion}
+                                    updateAnswerJson={updateAnswerJson}
                                 />
                                 <MetricInput
                                     metricKey="recyclingRate"
                                     label="Recycling Rate (%)"
                                     infoText="Percentage of waste recycled."
-                                    sliderMin={0}
-                                    sliderMax={100}
                                     metricState={metricInputs.recyclingRate}
                                     onMetricChange={handleMetricChange}
                                     clusters={metricClusters.recyclingRate}
+                                    updateAnswerJson={updateAnswerJson}
                                 />
                                 <MetricInput
                                     metricKey="foodWaste"
                                     label="Food Waste (kg)"
                                     infoText="Total food waste from catering."
-                                    sliderMin={0}
-                                    sliderMax={200}
                                     metricState={metricInputs.foodWaste}
                                     onMetricChange={handleMetricChange}
                                     clusters={metricClusters.foodWaste}
+                                    updateAnswerJson={updateAnswerJson}
                                 />
-                            </AccordionDetails>
-                        </Accordion>
-                        <Accordion>
-                            <AccordionSummary expandIcon={<ChevronDown />}>
-                                <Typography variant="subtitle1">
-                                    Transport & Offsetting
-                                </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
                                 <MetricInput
                                     metricKey="transportationEmissions"
                                     label="Transportation Emissions (kg CO₂)"
-                                    infoText="Estimate emissions from travel."
-                                    sliderMin={0}
-                                    sliderMax={500}
+                                    infoText="Estimate emissions from attendee travel."
                                     metricState={metricInputs.transportationEmissions}
                                     onMetricChange={handleMetricChange}
                                     clusters={metricClusters.transportationEmissions}
+                                    updateAnswerJson={updateAnswerJson}
                                 />
                                 <MetricInput
                                     metricKey="carbonOffsetting"
                                     label="Carbon Offsetting (%)"
                                     infoText="Percentage of budget for carbon offsetting."
-                                    sliderMin={0}
-                                    sliderMax={100}
                                     metricState={metricInputs.carbonOffsetting}
                                     onMetricChange={handleMetricChange}
                                     clusters={metricClusters.carbonOffsetting}
+                                    updateAnswerJson={updateAnswerJson}
                                 />
                                 <MetricInput
                                     metricKey="localSourcing"
                                     label="Local Sourcing (%)"
                                     infoText="Percentage of goods/services sourced locally."
-                                    sliderMin={0}
-                                    sliderMax={100}
                                     metricState={metricInputs.localSourcing}
                                     onMetricChange={handleMetricChange}
                                     clusters={metricClusters.localSourcing}
-                                />
-                            </AccordionDetails>
-                        </Accordion>
-                        <Accordion>
-                            <AccordionSummary expandIcon={<ChevronDown />}>
-                                <Typography variant="subtitle1">Operational Practices</Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={formData.sustainableCatering}
-                                            onChange={(e) =>
-                                                handleFormChange("sustainableCatering", e.target.checked)
-                                            }
-                                        />
-                                    }
-                                    label={
-                                        <LabeledField
-                                            label="Sustainable Catering"
-                                            infoText="Toggle if catering follows sustainable practices."
-                                        />
-                                    }
+                                    updateAnswerJson={updateAnswerJson}
                                 />
                                 <MetricInput
                                     metricKey="greenProcurement"
                                     label="Green Procurement (0-10)"
                                     infoText="Rate procurement on sustainability (0=poor, 10=excellent)."
-                                    sliderMin={0}
-                                    sliderMax={10}
                                     metricState={metricInputs.greenProcurement}
                                     onMetricChange={handleMetricChange}
                                     clusters={metricClusters.greenProcurement}
-                                />
-                                <FormControlLabel
-                                    control={
-                                        <Switch
-                                            checked={formData.digitalIntegration}
-                                            onChange={(e) =>
-                                                handleFormChange("digitalIntegration", e.target.checked)
-                                            }
-                                        />
-                                    }
-                                    label={
-                                        <LabeledField
-                                            label="Digital Integration"
-                                            infoText="Toggle if digital tools minimize paper usage."
-                                        />
-                                    }
+                                    updateAnswerJson={updateAnswerJson}
                                 />
                             </AccordionDetails>
                         </Accordion>
-                        {/* Environmental Impact Questionnaire (Section 2) */}
+                        {/* Environmental Impact Section */}
                         <Accordion sx={{ mt: 2 }}>
                             <AccordionSummary expandIcon={<ChevronDown />}>
                                 <Typography variant="subtitle1">Environmental Impact</Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Box sx={{ mb: 2 }}>
-                                    <Typography variant="subtitle1">Energy Use & Efficiency</Typography>
-                                    <Typography variant="caption">Primary Source of Energy</Typography>
+                                    <Typography variant="h6" gutterBottom>
+                                        Energy Use & Efficiency
+                                    </Typography>
+                                    <LabeledField
+                                        label="Primary Source of Energy"
+                                        infoText="Select the primary source of energy (e.g., 100% renewable, mostly renewable, predominantly conventional, diesel/gas generators)."
+                                    />
                                     <RadioGroup
                                         value={envImpact.energySource}
-                                        onChange={(e) =>
-                                            handleEnvImpactChange("energySource", e.target.value)
-                                        }
+                                        onChange={(e) => handleEnvImpactChange("energySource", e.target.value)}
                                     >
-                                        <RadioFormControlLabel
+                                        <FormControlLabel
                                             value="100Renewable"
                                             control={<Radio />}
-                                            label="100% renewable (e.g., solar, wind, hydro)"
+                                            label="100% renewable (5 points) – ideal for sustainability"
                                         />
-                                        <RadioFormControlLabel
+                                        <FormControlLabel
                                             value="mostlyRenewable"
                                             control={<Radio />}
-                                            label="Mostly renewable with some conventional energy"
+                                            label="Mostly renewable (3 points)"
                                         />
-                                        <RadioFormControlLabel
+                                        <FormControlLabel
                                             value="predominantlyConventional"
                                             control={<Radio />}
-                                            label="Predominantly conventional (grid electricity)"
+                                            label="Predominantly conventional (1 point)"
                                         />
-                                        <RadioFormControlLabel
+                                        <FormControlLabel
                                             value="dieselGenerators"
                                             control={<Radio />}
-                                            label="Diesel/gas generators"
+                                            label="Diesel/gas generators (0 points)"
                                         />
                                     </RadioGroup>
                                     <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
-                                        Energy-Efficient Practices (Select all that apply)
+                                        Energy‑Efficient Practices (Select all that apply – each gives 1 point)
                                     </Typography>
                                     {[
-                                        { value: "LED", label: "LED or energy-efficient lighting" },
+                                        { value: "LED", label: "LED or energy‑efficient lighting" },
                                         { value: "SmartHVAC", label: "Smart HVAC and temperature control" },
                                         { value: "EnergyManagement", label: "Energy management systems" },
                                         { value: "NaturalLighting", label: "Use of natural lighting" },
@@ -851,200 +1096,47 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                                             key={option.value}
                                             control={
                                                 <Checkbox
-                                                    checked={
-                                                        envImpact.energyEfficientPractices.includes(
-                                                            option.value
-                                                        )
-                                                    }
-                                                    onChange={() =>
-                                                        handleEnvImpactCheckboxChange(
-                                                            "energyEfficientPractices",
-                                                            option.value
-                                                        )
-                                                    }
+                                                    checked={envImpact.energyEfficientPractices.includes(option.value)}
+                                                    onChange={() => handleEnvImpactCheckboxChange("energyEfficientPractices", option.value)}
                                                 />
                                             }
                                             label={option.label}
                                         />
                                     ))}
-                                </Box>
-                                <Box sx={{ mb: 2 }}>
-                                    <Typography variant="subtitle1">
-                                        Carbon Footprint & Transportation
-                                    </Typography>
-                                    <Typography variant="caption">How are most attendees traveling?</Typography>
-                                    <RadioGroup
-                                        value={envImpact.transportationMode}
-                                        onChange={(e) =>
-                                            handleEnvImpactChange("transportationMode", e.target.value)
-                                        }
-                                    >
-                                        <RadioFormControlLabel
-                                            value="walking"
-                                            control={<Radio />}
-                                            label="Walking or cycling"
-                                        />
-                                        <RadioFormControlLabel
-                                            value="publicTransit"
-                                            control={<Radio />}
-                                            label="Public transportation"
-                                        />
-                                        <RadioFormControlLabel
-                                            value="carpooling"
-                                            control={<Radio />}
-                                            label="Carpooling or shared rides"
-                                        />
-                                        <RadioFormControlLabel
-                                            value="individual"
-                                            control={<Radio />}
-                                            label="Individual cars or flights"
-                                        />
-                                    </RadioGroup>
-                                    <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
-                                        Measures to reduce transportation-related emissions (Select all that apply)
-                                    </Typography>
-                                    {[
-                                        { value: "SustainableTransport", label: "Incentives for sustainable transport" },
-                                        { value: "ShuttleServices", label: "Organizing shuttle services" },
-                                        { value: "HybridParticipation", label: "Encouraging remote or hybrid participation" },
-                                        { value: "None", label: "No specific measures in place" },
-                                    ].map((option) => (
-                                        <FormControlLabel
-                                            key={option.value}
-                                            control={
-                                                <Checkbox
-                                                    checked={envImpact.transportationMeasures.includes(
-                                                        option.value
-                                                    )}
-                                                    onChange={() =>
-                                                        handleEnvImpactCheckboxChange(
-                                                            "transportationMeasures",
-                                                            option.value
-                                                        )
-                                                    }
-                                                />
-                                            }
-                                            label={option.label}
-                                        />
-                                    ))}
-                                </Box>
-                                <Box sx={{ mb: 2 }}>
-                                    <Typography variant="subtitle1">
-                                        Waste and Resource Management
-                                    </Typography>
-                                    <Typography variant="caption">
-                                        Waste management practices (Select all that apply)
-                                    </Typography>
-                                    {[
-                                        { value: "ZeroWaste", label: "Zero-waste policy" },
-                                        { value: "RecyclingStations", label: "Recycling and composting stations on site" },
-                                        { value: "VendorGuidelines", label: "Waste minimization guidelines for vendors" },
-                                        { value: "None", label: "No formal waste management practices" },
-                                    ].map((option) => (
-                                        <FormControlLabel
-                                            key={option.value}
-                                            control={
-                                                <Checkbox
-                                                    checked={envImpact.wasteManagementPractices.includes(
-                                                        option.value
-                                                    )}
-                                                    onChange={() =>
-                                                        handleEnvImpactCheckboxChange(
-                                                            "wasteManagementPractices",
-                                                            option.value
-                                                        )
-                                                    }
-                                                />
-                                            }
-                                            label={option.label}
-                                        />
-                                    ))}
-                                    <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
-                                        How is water use managed?
-                                    </Typography>
-                                    <RadioGroup
-                                        value={envImpact.waterManagement}
-                                        onChange={(e) =>
-                                            handleEnvImpactChange("waterManagement", e.target.value)
-                                        }
-                                    >
-                                        <RadioFormControlLabel
-                                            value="waterEfficient"
-                                            control={<Radio />}
-                                            label="Use of water-efficient fixtures and monitoring"
-                                        />
-                                        <RadioFormControlLabel
-                                            value="rainwater"
-                                            control={<Radio />}
-                                            label="Rainwater harvesting/reuse"
-                                        />
-                                        <RadioFormControlLabel
-                                            value="none"
-                                            control={<Radio />}
-                                            label="No specific water-saving measures"
-                                        />
-                                    </RadioGroup>
-                                </Box>
-                                <Box>
-                                    <Typography variant="subtitle1">
-                                        Materials and Sustainable Procurement
-                                    </Typography>
-                                    <Typography variant="caption">
-                                        Are sustainable materials used for items like signage, décor, and swag?
-                                    </Typography>
-                                    <RadioGroup
-                                        value={envImpact.sustainableMaterials}
-                                        onChange={(e) =>
-                                            handleEnvImpactChange("sustainableMaterials", e.target.value)
-                                        }
-                                    >
-                                        <RadioFormControlLabel
-                                            value="yesExclusively"
-                                            control={<Radio />}
-                                            label="Yes, exclusively"
-                                        />
-                                        <RadioFormControlLabel
-                                            value="partially"
-                                            control={<Radio />}
-                                            label="Partially"
-                                        />
-                                        <RadioFormControlLabel
-                                            value="no"
-                                            control={<Radio />}
-                                            label="No"
-                                        />
-                                    </RadioGroup>
                                 </Box>
                             </AccordionDetails>
                         </Accordion>
                     </Box>
                 );
-            // Step 2: Governance, Digital & Data Collection (Sections 3 & 4)
             case 2:
                 return (
                     <Box sx={{ mt: 2 }}>
+                        {validationErrors.length > 0 && (
+                            <Alert severity="warning" sx={{ mb: 2 }}>
+                                {validationErrors.map((err, idx) => (
+                                    <div key={idx}>{err}</div>
+                                ))}
+                            </Alert>
+                        )}
                         <Box sx={{ mb: 2 }}>
-                            <Typography variant="subtitle1">Sustainability Policy & Reporting</Typography>
-                            <Typography variant="caption">Does your organization have a written sustainability policy for events?</Typography>
+                            <Typography variant="h6" gutterBottom>
+                                Sustainability Policy & Reporting
+                            </Typography>
                             <RadioGroup
                                 value={governanceData.sustainabilityPolicy}
                                 onChange={(e) => handleGovernanceChange("sustainabilityPolicy", e.target.value)}
                             >
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="fullyDocumented"
                                     control={<Radio />}
-                                    label="Yes, fully documented and publicly available"
+                                    label="Yes, fully documented and publicly available (5 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="informal"
                                     control={<Radio />}
-                                    label="Partially (informal guidelines exist)"
+                                    label="Partially (informal guidelines exist – 3 points)"
                                 />
-                                <RadioFormControlLabel
-                                    value="no"
-                                    control={<Radio />}
-                                    label="No"
-                                />
+                                <FormControlLabel value="no" control={<Radio />} label="No (0 points)" />
                             </RadioGroup>
                             <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
                                 Are sustainability performance data and results communicated in a transparent report?
@@ -1053,45 +1145,38 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                                 value={governanceData.sustainabilityReporting}
                                 onChange={(e) => handleGovernanceChange("sustainabilityReporting", e.target.value)}
                             >
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="yesFramework"
                                     control={<Radio />}
-                                    label="Yes, using recognized frameworks (e.g., GRI, ISO 20121)"
+                                    label="Yes, using recognized frameworks (e.g., GRI, ISO 20121) (5 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="adHoc"
                                     control={<Radio />}
-                                    label="Sometimes, on an ad hoc basis"
+                                    label="Sometimes, on an ad hoc basis (3 points)"
                                 />
-                                <RadioFormControlLabel
-                                    value="noReporting"
-                                    control={<Radio />}
-                                    label="No reporting is conducted"
-                                />
+                                <FormControlLabel value="noReporting" control={<Radio />} label="No reporting is conducted (0 points)" />
                             </RadioGroup>
                         </Box>
                         <Box sx={{ mb: 2 }}>
-                            <Typography variant="subtitle1">Supply Chain and Ethical Governance</Typography>
-                            <Typography variant="caption">Are vendors and suppliers evaluated for sustainability credentials before selection?</Typography>
+                            <Typography variant="h6" gutterBottom>
+                                Supply Chain and Ethical Governance
+                            </Typography>
                             <RadioGroup
                                 value={governanceData.vendorEvaluation}
                                 onChange={(e) => handleGovernanceChange("vendorEvaluation", e.target.value)}
                             >
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="formalEvaluation"
                                     control={<Radio />}
-                                    label="Yes, a formal evaluation is in place"
+                                    label="Yes, a formal evaluation is in place (5 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="occasional"
                                     control={<Radio />}
-                                    label="Occasionally, based on cost or availability"
+                                    label="Occasionally, based on cost or availability (3 points)"
                                 />
-                                <RadioFormControlLabel
-                                    value="no"
-                                    control={<Radio />}
-                                    label="No"
-                                />
+                                <FormControlLabel value="no" control={<Radio />} label="No (0 points)" />
                             </RadioGroup>
                             <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
                                 Is there an independent audit or third-party verification of your event’s sustainability practices?
@@ -1100,46 +1185,41 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                                 value={governanceData.independentAudit}
                                 onChange={(e) => handleGovernanceChange("independentAudit", e.target.value)}
                             >
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="yesAudit"
                                     control={<Radio />}
-                                    label="Yes, annually or per event"
+                                    label="Yes, annually or per event (5 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="planned"
                                     control={<Radio />}
-                                    label="Planned but not yet implemented"
+                                    label="Planned but not yet implemented (3 points)"
                                 />
-                                <RadioFormControlLabel
-                                    value="no"
-                                    control={<Radio />}
-                                    label="No"
-                                />
+                                <FormControlLabel value="no" control={<Radio />} label="No (0 points)" />
                             </RadioGroup>
                         </Box>
                         <Box sx={{ mb: 2 }}>
-                            <Typography variant="subtitle1">Digital Integration & Data Collection</Typography>
-                            <Typography variant="caption">
-                                To reduce material waste, how is event information and communication managed?
+                            <Typography variant="h6" gutterBottom>
+                                Digital Integration & Data Collection
                             </Typography>
                             <RadioGroup
                                 value={governanceData.digitalPractices}
                                 onChange={(e) => handleGovernanceChange("digitalPractices", e.target.value)}
                             >
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="entirelyDigital"
                                     control={<Radio />}
-                                    label="Entirely digital (tickets, agendas, maps)"
+                                    label="Entirely digital (tickets, agendas, maps) (5 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="mixed"
                                     control={<Radio />}
-                                    label="Mixed approach (digital where possible, minimal paper)"
+                                    label="Mixed approach (digital where possible, minimal paper) (3 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="primarilyPaper"
                                     control={<Radio />}
-                                    label="Primarily paper-based"
+                                    label="Primarily paper-based (0 points)"
                                 />
                             </RadioGroup>
                             <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
@@ -1149,21 +1229,17 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                                 value={governanceData.dataCollection}
                                 onChange={(e) => handleGovernanceChange("dataCollection", e.target.value)}
                             >
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="comprehensiveDigital"
                                     control={<Radio />}
-                                    label="Yes, comprehensively using digital tools"
+                                    label="Yes, comprehensively using digital tools (5 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="manualTracking"
                                     control={<Radio />}
-                                    label="Partially, with manual tracking"
+                                    label="Partially, with manual tracking (3 points)"
                                 />
-                                <RadioFormControlLabel
-                                    value="noData"
-                                    control={<Radio />}
-                                    label="No data collection"
-                                />
+                                <FormControlLabel value="noData" control={<Radio />} label="No data collection (0 points)" />
                             </RadioGroup>
                             <Typography variant="caption" sx={{ display: "block", mt: 1 }}>
                                 How often is the sustainability performance reviewed for improvement?
@@ -1172,135 +1248,116 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                                 value={governanceData.performanceReviewFrequency}
                                 onChange={(e) => handleGovernanceChange("performanceReviewFrequency", e.target.value)}
                             >
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="afterEveryEvent"
                                     control={<Radio />}
-                                    label="After every event with formal review sessions"
+                                    label="After every event with formal review sessions (5 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="periodically"
                                     control={<Radio />}
-                                    label="Periodically, when time permits"
+                                    label="Periodically, when time permits (3 points)"
                                 />
-                                <RadioFormControlLabel
+                                <FormControlLabel
                                     value="rarely"
                                     control={<Radio />}
-                                    label="Rarely or never"
+                                    label="Rarely or never (0 points)"
                                 />
                             </RadioGroup>
                         </Box>
                     </Box>
                 );
-            // Step 3: Review & Calculate
             case 3:
+                // In the review step, we display an overview of each section’s metrics and points allocated.
+                const { totalPoints } = calculateScore();
+                const metricsOverview = evaluateMetrics();
                 return (
                     <Box sx={{ mt: 2 }}>
                         <Typography variant="h6" gutterBottom>
-                            Review Your Event Details
+                            Review Your Metrics
                         </Typography>
-                        <Typography variant="body1">
-                            <strong>Event Name:</strong> {formData.eventName}
-                        </Typography>
-                        <Typography variant="body1">
-                            <strong>Date:</strong> {formData.eventDate}
-                        </Typography>
-                        <Typography variant="body1">
-                            <strong>Location:</strong> {formData.eventLocation}
-                        </Typography>
-                        <Typography variant="body1">
-                            <strong>Approximate Attendees:</strong> {formData.approximateAttendees}
-                        </Typography>
-                        <Typography variant="body1">
-                            <strong>Event Duration:</strong> {formData.eventDuration}
-                        </Typography>
-                        <Typography variant="body1">
-                            <strong>Event Location Type:</strong> {formData.eventLocationType}
-                        </Typography>
-                        <Typography variant="body1">
-                            <strong>Event Timing:</strong> {formData.eventTiming}
-                        </Typography>
-                        <Typography variant="body1">
-                            <strong>Venue Type:</strong> {formData.venueType}
-                        </Typography>
-                        <Box sx={{ mt: 2 }}>
-                            <Typography variant="h6">Built‑in Sustainability Metrics</Typography>
-                            {Object.entries(metricInputs).map(([key, value]) => (
-                                <Typography key={key} variant="body1">
-                                    <strong>{key}:</strong>{" "}
-                                    {value.mode === "custom" ? value.custom : `Group: ${value.cluster}`}
+                        <Card variant="outlined" sx={{ mb: 2 }}>
+                            <CardContent>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Event Overview Points
                                 </Typography>
-                            ))}
-                        </Box>
-                        {customMetrics.length > 0 && (
-                            <>
-                                <Typography variant="h6" sx={{ mt: 2 }}>
-                                    Custom Metrics
+                                <Typography variant="body1">
+                                    Attendees: {metricsOverview.overview.approximateAttendees.points} points
                                 </Typography>
-                                {customMetrics.map((metric) => (
-                                    <Box key={metric.id} sx={{ mb: 1 }}>
-                                        <Typography variant="body1">
-                                            <strong>{metric.label}:</strong>{" "}
-                                            {metric.type === "numeric" ? metric.numericValue : metric.textValue}
-                                        </Typography>
-                                    </Box>
+                                <Typography variant="body1">
+                                    Duration: {metricsOverview.overview.eventDuration.points} points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Venue Type: {metricsOverview.overview.venueType.points} points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Event Timing: {metricsOverview.overview.eventTiming.points} points
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                        <Card variant="outlined" sx={{ mb: 2 }}>
+                            <CardContent>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Environmental Impact Points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Energy Source: {metricsOverview.envImpact.energySource.points} points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Energy-Efficient Practices: {metricsOverview.envImpact.energyEfficientPractices.points} points
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                        <Card variant="outlined" sx={{ mb: 2 }}>
+                            <CardContent>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Governance & Digital Points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Sustainability Policy: {metricsOverview.governance.sustainabilityPolicy.points} points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Reporting: {metricsOverview.governance.sustainabilityReporting.points} points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Vendor Evaluation: {metricsOverview.governance.vendorEvaluation.points} points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Independent Audit: {metricsOverview.governance.independentAudit.points} points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Digital Practices: {metricsOverview.governance.digitalPractices.points} points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Data Collection: {metricsOverview.governance.dataCollection.points} points
+                                </Typography>
+                                <Typography variant="body1">
+                                    Performance Review: {metricsOverview.governance.performanceReviewFrequency.points} points
+                                </Typography>
+                            </CardContent>
+                        </Card>
+                        <Card variant="outlined" sx={{ mb: 2 }}>
+                            <CardContent>
+                                <Typography variant="subtitle1" gutterBottom>
+                                    Built‑in Sustainability Metrics
+                                </Typography>
+                                {Object.entries(metricInputs).map(([key]) => (
+                                    <Typography key={key} variant="body1">
+                                        <strong>{key}:</strong> {answersJson.builtIn[key] ?? 0} points
+                                    </Typography>
                                 ))}
-                            </>
-                        )}
-                        <Box sx={{ mt: 2 }}>
-                            <Typography variant="h6">Environmental Impact Responses</Typography>
-                            <Typography variant="body1">
-                                <strong>Primary Energy Source:</strong> {envImpact.energySource}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Energy-Efficient Practices:</strong>{" "}
-                                {envImpact.energyEfficientPractices.join(", ")}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Transportation Mode:</strong> {envImpact.transportationMode}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Transportation Measures:</strong>{" "}
-                                {envImpact.transportationMeasures.join(", ")}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Waste Management Practices:</strong>{" "}
-                                {envImpact.wasteManagementPractices.join(", ")}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Water Management:</strong> {envImpact.waterManagement}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Sustainable Materials:</strong> {envImpact.sustainableMaterials}
-                            </Typography>
-                        </Box>
-                        <Box sx={{ mt: 2 }}>
-                            <Typography variant="h6">Governance & Digital Responses</Typography>
-                            <Typography variant="body1">
-                                <strong>Sustainability Policy:</strong> {governanceData.sustainabilityPolicy}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Sustainability Reporting:</strong> {governanceData.sustainabilityReporting}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Vendor Evaluation:</strong> {governanceData.vendorEvaluation}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Independent Audit:</strong> {governanceData.independentAudit}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Digital Practices:</strong> {governanceData.digitalPractices}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Data Collection:</strong> {governanceData.dataCollection}
-                            </Typography>
-                            <Typography variant="body1">
-                                <strong>Performance Review Frequency:</strong> {governanceData.performanceReviewFrequency}
-                            </Typography>
-                        </Box>
-                        {calculatedScore && (
-                            <Typography variant="h6" sx={{ mt: 2, color: "green" }}>
-                                Sustainability Score: {calculatedScore} / 10
-                            </Typography>
+                            </CardContent>
+                        </Card>
+                        <Typography variant="h6" sx={{ color: "green", mb: 2 }}>
+                            Sustainability Factor: {calculatedScore} / 10
+                        </Typography>
+                        <Typography variant="body2">
+                            Total Points Achieved: {totalPoints} out of 114 possible.
+                        </Typography>
+                        {submissionStatus && (
+                            <Alert severity="info" sx={{ mt: 2 }}>
+                                {submissionStatus}
+                            </Alert>
                         )}
                     </Box>
                 );
@@ -1316,18 +1373,31 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
                 <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 3 }}>
                     {steps.map((label) => (
                         <Step key={label}>
-                            <StepLabel>{label}</StepLabel>
+                            <StepLabel
+                                StepIconProps={{
+                                    sx: {
+                                        color: "green",
+                                        "&.Mui-active": { color: "green" },
+                                        "&.Mui-completed": { color: "green" },
+                                    },
+                                }}
+                            >
+                                {label}
+                            </StepLabel>
                         </Step>
                     ))}
                 </Stepper>
-                {renderStepContent(activeStep)}
+                {/* Wrap step content in a Fade component for smooth transitions */}
+                <Fade in={true} timeout={{ enter: 500, exit: 500 }} key={activeStep}>
+                    <div>{renderStepContent(activeStep)}</div>
+                </Fade>
             </DialogContent>
             <DialogActions sx={{ px: 3, py: 2 }}>
                 <Button disabled={activeStep === 0} onClick={handleBack}>
                     Back
                 </Button>
                 <Button variant="contained" onClick={handleNext}>
-                    {activeStep === steps.length - 1 ? "Calculate Score" : "Next"}
+                    {activeStep === steps.length - 1 ? "Submit" : "Next"}
                 </Button>
             </DialogActions>
         </Dialog>

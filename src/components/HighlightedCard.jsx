@@ -29,7 +29,7 @@ export default function ButtonsContainer() {
                         fullWidth
                         onClick={() => setOpenScoreDialog(true)}
                         sx={{
-                            height: '80px', // Updated height for the first button
+                            height: '53.33333333333333px', // Updated height for the first button
                             textTransform: 'none',
                             fontSize: '1.25rem'
                         }}
@@ -47,7 +47,7 @@ export default function ButtonsContainer() {
                         fullWidth
                         onClick={() => setOpenAIDialog(true)}
                         sx={{
-                            height: '80px', // Updated height for the second button
+                            height: '53.33333333333333px', // Updated height for the second button
                             textTransform: 'none',
                             fontSize: '1.25rem'
                         }}
@@ -56,6 +56,24 @@ export default function ButtonsContainer() {
                             ✨
                         </span>
                         AI Event Description Parser
+                    </Button>
+                </Grid>
+                <Grid item xs={12}>
+                    <Button
+                        variant="outlined"
+                        color="primary"
+                        fullWidth
+                        onClick={() => setOpenAIDialog(true)}
+                        sx={{
+                            height: '53.33333333333333px', // Updated height for the second button
+                            textTransform: 'none',
+                            fontSize: '1.25rem'
+                        }}
+                    >
+                        <span role="img" aria-label="robot" style={{ marginRight: '8px' }}>
+                            🔗
+                        </span>
+                        AI URL Parser
                     </Button>
                 </Grid>
             </Grid>
