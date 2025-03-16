@@ -45,7 +45,7 @@ const data = [
     },
 ];
 
-export default function MainGrid() {
+export default function MainGrid({userData}) {
     return (
         <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' }, textAlign: 'left' }}>
             {/* Overview cards */}
@@ -64,7 +64,7 @@ export default function MainGrid() {
                     </Grid>
                 ))}
                 <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-                    <HighlightedCard />
+                    <HighlightedCard userData={userData}/>
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                     <SessionsChart />

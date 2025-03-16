@@ -12,19 +12,19 @@ import {
 } from "@mui/material";
 import { Sparkles } from "lucide-react";
 
-const EventAIDescriptionDialog = ({ isOpen, onClose, onExtract }) => {
+const EventAIURLDialog = ({ isOpen, onClose, onExtract }) => {
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleExtract = async () => {
         setLoading(true);
-        fetch("http://194.102.62.226:5000/create_event_ai", {
+        fetch("http://194.102.62.226:5000/extract_event", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                text: description,
+                url: description,
             }),
         }).then((response) => response.json())
             .then((data) => {
@@ -51,18 +51,18 @@ const EventAIDescriptionDialog = ({ isOpen, onClose, onExtract }) => {
             <DialogTitle>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                     <Sparkles style={{ color: "#4caf50" }} />
-                    <Typography variant="h6">AI Event Description Parser</Typography>
+                    <Typography variant="h6">AI Event URL Parser</Typography>
                 </Box>
             </DialogTitle>
             <DialogContent dividers>
                 <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
-                    Enter a brief description of the event, and AI will extract key details.
+                    Enter the URL of the event, and AI will extract key details.
                 </Typography>
                 <TextField
                     fullWidth
                     multiline
                     minRows={0}
-                    placeholder="Describe your event..."
+                    placeholder="Enter the URL..."
                     variant="outlined"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -91,4 +91,4 @@ const EventAIDescriptionDialog = ({ isOpen, onClose, onExtract }) => {
     );
 };
 
-export default EventAIDescriptionDialog;
+export default EventAIURLDialog;

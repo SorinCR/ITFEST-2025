@@ -78,7 +78,7 @@ export default function Dashboard(props) {
                         }}
                     >
                         <Header />
-                        <MainGrid />
+                        <MainGrid userData={userData}/>
                     </Stack>
                 </Box>
             </Box>

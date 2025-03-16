@@ -57,7 +57,7 @@ export default function SideMenu({ userData }) {
                 }}
             >
                 <MenuContent />
-                <CardAlert />
+                {userData.plan == 0 ? <CardAlert /> : <></>}
             </Box>
             <Stack
                 direction="row"
@@ -86,7 +86,7 @@ export default function SideMenu({ userData }) {
                             : `${userData.fname} ${userData.lname}`}
                     </Typography>
                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                        {userData.plan === 0 ? 'Free Plan' : 'Enterprise Plan'}
+                        {userData.plan == 0 ? 'Free Plan' : 'Enterprise Plan'}
                     </Typography>
                 </Box>
                 <OptionsMenu />

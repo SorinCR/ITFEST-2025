@@ -91,46 +91,32 @@ def extract_event_data(text):
     
     Output JSON structure:
     {{
-      "eventDetails": {{
         "eventName": "...",
-        "date": "...",
-        "location": "...",
-        "approximateAttendees": "...",
-        "eventDuration": "...",
-        "eventLocationType": "...",
-        "eventTiming": "...",
-        "venueType": "..."
-      }},
-      "builtInSustainabilityMetrics": {{
-        "energyConsumption": ...,
-        "renewableEnergyUsage": "...",
-        "waterConsumption": "...",
-        "wasteDiversion": ...,
-        "recyclingRate": ...,
-        "foodWaste": ...,
-        "transportationEmissions": ...,
-        "carbonOffsetting": ...,
-        "localSourcing": ...,
-        "greenProcurement": ...
-      }},
-      "environmentalImpactResponses": {{
-        "primaryEnergySource": "...",
-        "energyEfficientPractices": [...],
-        "transportationMode": "...",
-        "transportationMeasures": "...",
-        "wasteManagementPractices": "...",
-        "waterManagement": "...",
-        "sustainableMaterials": "..."
-      }},
-      "governanceAndDigitalResponses": {{
-        "sustainabilityPolicy": "...",
-        "sustainabilityReporting": "...",
-        "vendorEvaluation": "...",
-        "independentAudit": "...",
-        "digitalPractices": "...",
-        "dataCollection": "...",
-        "performanceReviewFrequency": "..."
-      }}
+        "eventDate": <YYYY-MM-DD>,
+        "eventLocation": "...",
+        "approximateAttendees": <lessThan50/50-200/200-1000/moreThan1000/Not specified>,
+        "eventDuration": <fewHours/oneDay/multipleDays/overAWeek/Not specified>,
+        "venueType": <Outdoor/Virtual/Hybrid/Indoor/Not specified>,
+        "eventTiming": <daylight/mixed/night/Not specified>,
+        "energyConsumption": <low/medium/high/Not specified>,
+        "renewableEnergyUsage": <low/medium/high/Not specified>,
+        "waterConsumption": <low/medium/high/Not specified>,
+        "wasteDiversion": <low/medium/high/Not specified>,
+        "recyclingRate": <low/medium/high/Not specified>,
+        "foodWaste": <low/medium/high/Not specified>,
+        "transportationEmissions": <low/medium/high/Not specified>,
+        "carbonOffsetting": <low/medium/high/Not specified>,
+        "localSourcing": <low/medium/high/Not specified>,
+        "greenProcurement": <poor/good/excellent/Not specified>,
+        "energySource": <100Renewable/mostlyRenewable/predominantlyConventional>,
+        "energyEfficientPractices": [LED/SmartHVAC/EnergyManagement/NaturalLighting/None],
+        "sustainabilityPolicy": <fullyDocumented/informal/no/Not specified>,
+        "sustainabilityReporting": <yesFramework/adHoc/noReporting/Not specified>,
+        "vendorEvaluation": <formalEvaluation/occasional/no/Not specified>,
+        "independentAudit": <yesAudit/planned/no/Not specified>,
+        "digitalPractices": <entirelyDigital/mixed/primarilyPaper/Not specified>,
+        "dataCollection": <comprehensieDigital/manualTracking/noData/Not specified>,
+        "performanceReviewFrequency": <afterEveryEvent/periodically/rarely/Not specified>,
     }}
     """
     response = model.generate_content(prompt)
@@ -165,10 +151,12 @@ def extract_event():
     parsed_data = json.loads(structured_data.replace("```json", "").replace("```", ""))
     return parsed_data
 
+dummy = "Participate in the 'Bike to Work' day in Timișoara, reducing urban pollution and encouraging sustainable transportation within the city. The event will take place on 15th of May, 2022, starting at 8:00 AM in the city center. The event is expected to attract around 500 participants, with a duration of 4 hours. The event will take place in the city center, with a mix of indoor and outdoor activities. The event will include a bike parade, a bike maintenance workshop, and a bike-sharing program. The event will be powered by renewable energy sources, with solar panels and wind turbines providing electricity. The event will also feature a water station, recycling bins, and composting facilities to reduce waste and promote sustainability. The event will have a recycling rate of 80%, with waste diversion and food waste reduction programs in place. The event will also include a transportation plan, with shuttle buses and bike lanes provided for participants. The event will offset its carbon footprint through tree planting and other carbon offsetting measures. The event will source local food and beverages, with an emphasis on organic and sustainable products. The event will also feature sustainable catering options, with vegetarian and vegan food choices available. The event will be digitally integrated, with a website, social media pages, and a mobile app providing information and updates. The event will be promoted through online and offline channels, with a focus on sustainability and environmental awareness."
+
 @app.route('/create_event_ai', methods=['POST'])
 def create_event_ai():
     data = request.json
-    structured_data = extract_event_data("Participate in the 'Bike to Work' day in Timișoara, reducing urban pollution and encouraging sustainable transportation within the city. The event will take place on 15th of May, 2022, starting at 8:00 AM in the city center. The event is expected to attract around 500 participants, with a duration of 4 hours. The event will take place in the city center, with a mix of indoor and outdoor activities. The event will include a bike parade, a bike maintenance workshop, and a bike-sharing program. The event will be powered by renewable energy sources, with solar panels and wind turbines providing electricity. The event will also feature a water station, recycling bins, and composting facilities to reduce waste and promote sustainability. The event will have a recycling rate of 80%, with waste diversion and food waste reduction programs in place. The event will also include a transportation plan, with shuttle buses and bike lanes provided for participants. The event will offset its carbon footprint through tree planting and other carbon offsetting measures. The event will source local food and beverages, with an emphasis on organic and sustainable products. The event will also feature sustainable catering options, with vegetarian and vegan food choices available. The event will be digitally integrated, with a website, social media pages, and a mobile app providing information and updates. The event will be promoted through online and offline channels, with a focus on sustainability and environmental awareness.")
+    structured_data = extract_event_data(data['text'])
     
     parsed_data = json.loads(structured_data.replace("```json", "").replace("```", ""))
     return parsed_data

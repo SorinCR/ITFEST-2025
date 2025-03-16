@@ -11,10 +11,10 @@ export default function CardAlert() {
             <CardContent>
                 <AutoAwesomeRoundedIcon fontSize="small" />
                 <Typography gutterBottom sx={{ fontWeight: 600 }}>
-                    Plan about to expire
+                    Need an extra hand?
                 </Typography>
                 <Typography variant="body2" sx={{ mb: 2, color: 'text.secondary' }}>
-                    Enjoy 10% off when renewing your plan today.
+                Use our <span style={{color: '#4287f5'}}>AI tools</span> to get your event on your user's eyes as fast as possible with the Enterprise Plan
                 </Typography>
                 <Button variant="contained" size="small" fullWidth>
                     Upgrade

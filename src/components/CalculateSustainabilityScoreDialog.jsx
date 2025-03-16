@@ -220,47 +220,107 @@ const MetricInput = ({
     );
 };
 
-const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
+let dummyData = {
+    "approximateAttendees": "200-1000",
+    "carbonOffsetting": "high",
+    "dataCollection": "comprehensieDigital",
+    "digitalPractices": "entirelyDigital",
+    "energyConsumption": "medium",
+    "energyEfficientPractices": [
+      "None"
+    ],
+    "energySource": "100Renewable",
+    "eventDate": "2022-05-15",
+    "eventDuration": "fewHours",
+    "eventLocation": "Timi\u0219oara city center",
+    "eventName": "Bike to Work day",
+    "eventTiming": "daylight",
+    "foodWaste": "medium",
+    "greenProcurement": "excellent",
+    "independentAudit": "no",
+    "localSourcing": "high",
+    "performanceReviewFrequency": "Not specified",
+    "recyclingRate": "high",
+    "renewableEnergyUsage": "high",
+    "sustainabilityPolicy": "informal",
+    "sustainabilityReporting": "adHoc",
+    "transportationEmissions": "low",
+    "vendorEvaluation": "occasional",
+    "venueType": "Hybrid",
+    "wasteDiversion": "high",
+    "waterConsumption": "medium"
+  }
+  
+
+const CalculateSustainabilityScoreDialog = ({ isOpen, onClose, extractedData }) => {
     // Main form state.
+    console.log(extractedData)
+    // const [formData, setFormData] = useState({
+    //     eventName: extractedData.eventName || "",
+    //     eventDate: extractedData.eventDate || "",
+    //     eventLocation: extractedData.eventLocation || "",
+    //     approximateAttendees: extractedData.approximateAttendees || "", // Options: lessThan50, 50-200, 200-1000, moreThan1000
+    //     eventDuration: extractedData.eventDuration || "", // Options: fewHours, oneDay, multipleDays, overAWeek
+    //     venueType: extractedData.venueType || "", // Options: Indoor, Outdoor, Virtual, Hybrid
+    //     eventTiming: extractedData.eventTiming || "", // Options: daylight, night, mixed
+    // });
+
+    useEffect(() => {
+        if (extractedData) {
+            setFormData({
+                eventName: extractedData.eventName || "",
+                eventDate: extractedData.eventDate || "",
+                eventLocation: extractedData.eventLocation || "",
+                approximateAttendees: extractedData.approximateAttendees || "",
+                eventDuration: extractedData.eventDuration || "",
+                venueType: extractedData.venueType || "",
+                eventTiming: extractedData.eventTiming || "",
+            });
+        }
+    }, [extractedData]);
+
+
     const [formData, setFormData] = useState({
         eventName: "",
         eventDate: "",
         eventLocation: "",
-        approximateAttendees: "", // Options: lessThan50, 50-200, 200-1000, moreThan1000
-        eventDuration: "", // Options: fewHours, oneDay, multipleDays, overAWeek
-        venueType: "", // Options: Indoor, Outdoor, Virtual, Hybrid
-        eventTiming: "", // Options: daylight, night, mixed
+        approximateAttendees: "",
+        eventDuration: "", 
+        venueType: "",
+        eventTiming: "",
     });
+
+    // console.log(extractedData.eventName || "")
 
     // Built‑in metric inputs state.
     const [metricInputs, setMetricInputs] = useState({
-        energyConsumption: { cluster: "" },
-        renewableEnergyUsage: { cluster: "" },
-        waterConsumption: { cluster: "" },
-        wasteDiversion: { cluster: "" },
-        recyclingRate: { cluster: "" },
-        foodWaste: { cluster: "" },
-        transportationEmissions: { cluster: "" },
-        carbonOffsetting: { cluster: "" },
-        localSourcing: { cluster: "" },
-        greenProcurement: { cluster: "" },
+        energyConsumption: { cluster: extractedData.energyConsumption || "" },
+        renewableEnergyUsage: { cluster: extractedData.renewableEnergyUsage || "" },
+        waterConsumption: { cluster: extractedData.waterConsumption || "" },
+        wasteDiversion: { cluster: extractedData.wasteDiversion || "" },
+        recyclingRate: { cluster: extractedData.recyclingRate || "" },
+        foodWaste: { cluster: extractedData.foodWaste || "" },
+        transportationEmissions: { cluster: extractedData.transportationEmissions || "" },
+        carbonOffsetting: { cluster: extractedData.carbonOffsetting || "" },
+        localSourcing: { cluster: extractedData.localSourcing || "" },
+        greenProcurement: { cluster: extractedData.greenProcurement || "" },
     });
 
     // Environmental Impact state.
     const [envImpact, setEnvImpact] = useState({
-        energySource: "", // Options: 100Renewable, mostlyRenewable, predominantlyConventional, dieselGenerators
-        energyEfficientPractices: [], // Options: LED, SmartHVAC, EnergyManagement, NaturalLighting, None
+        energySource: extractedData.energySource || "", // Options: 100Renewable, mostlyRenewable, predominantlyConventional, dieselGenerators
+        energyEfficientPractices: extractedData.energyEfficientPractices || [], // Options: LED, SmartHVAC, EnergyManagement, NaturalLighting, None
     });
 
     // Governance & Digital state.
     const [governanceData, setGovernanceData] = useState({
-        sustainabilityPolicy: "", // Options: fullyDocumented, informal, no
-        sustainabilityReporting: "", // Options: yesFramework, adHoc, noReporting
-        vendorEvaluation: "", // Options: formalEvaluation, occasional, no
-        independentAudit: "", // Options: yesAudit, planned, no
-        digitalPractices: "", // Options: entirelyDigital, mixed, primarilyPaper
-        dataCollection: "", // Options: comprehensiveDigital, manualTracking, noData
-        performanceReviewFrequency: "", // Options: afterEveryEvent, periodically, rarely
+        sustainabilityPolicy: extractedData.sustainabilityPolicy || "", // Options: fullyDocumented, informal, no
+        sustainabilityReporting: extractedData.sustainabilityReporting || "", // Options: yesFramework, adHoc, noReporting
+        vendorEvaluation: extractedData.vendorEvaluation || "", // Options: formalEvaluation, occasional, no
+        independentAudit: extractedData.independentAudit || "", // Options: yesAudit, planned, no
+        digitalPractices: extractedData.digitalPractices || "", // Options: entirelyDigital, mixed, primarilyPaper
+        dataCollection: extractedData.dataCollection || "", // Options: comprehensiveDigital, manualTracking, noData
+        performanceReviewFrequency: extractedData.performanceReviewFrequency || "", // Options: afterEveryEvent, periodically, rarely
     });
 
     // JSON state for storing only built‑in metrics’ allocated points.
@@ -862,6 +922,7 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose }) => {
             });
             if (response.ok) {
                 setSubmissionStatus("Data successfully submitted!");
+                onClose();
             } else {
                 setSubmissionStatus("Submission failed.");
             }

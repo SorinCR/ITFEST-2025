@@ -13,7 +13,7 @@ const Footer = () => (
     >
         <Container maxWidth="lg" sx={{ textAlign: "center" }}>
             <Typography variant="body2">
-                © 2025 EcoEvent. All rights reserved.
+                © 2025 EcoTrace. All rights reserved.
             </Typography>
         </Container>
     </Box>
