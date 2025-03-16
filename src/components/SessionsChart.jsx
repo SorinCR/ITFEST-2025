@@ -24,24 +24,66 @@ AreaGradient.propTypes = {
     id: PropTypes.string.isRequired,
 };
 
-function getDaysInMonth(month, year) {
-    const date = new Date(year, month, 0);
-    const monthName = date.toLocaleDateString('en-US', {
-        month: 'short',
-    });
-    const daysInMonth = date.getDate();
-    const days = [];
-    let i = 1;
-    while (days.length < daysInMonth) {
-        days.push(`${monthName} ${i}`);
-        i += 1;
-    }
-    return days;
-}
-
-export default function SessionsChart() {
+export default function SessionsChart({ events = [] }) {
     const theme = useTheme();
-    const data = getDaysInMonth(4, 2024);
+
+    // Create an array of last 30 days labels (e.g., "Apr 5")
+    const getLast30DaysLabels = () => {
+        const labels = [];
+        const now = new Date();
+        for (let i = 29; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(now.getDate() - i);
+            labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        }
+        return labels;
+    };
+
+    const labels = getLast30DaysLabels();
+
+    // Define time range (last 30 days)
+    const now = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(now.getDate() - 30);
+
+    // Filter events for the last 30 days
+    const eventsLast30 = events.filter(event => {
+        const eventDate = new Date(event.eventDate);
+        return eventDate >= thirtyDaysAgo && eventDate <= now;
+    });
+
+    // Mapping string values to numbers for the metrics
+    const energyMapping = { low: 1, medium: 2, high: 3 };
+    const carbonMapping = { no: 0, low: 1, medium: 2, high: 3 };
+    const transportMapping = { low: 1, medium: 2, high: 3 };
+
+    // Compute daily averages for a given metric (using the provided mapping)
+    const computeDailySeries = (mapping, key) =>
+        labels.map(label => {
+            const eventsOnDay = eventsLast30.filter(event => {
+                const d = new Date(event.eventDate);
+                return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === label;
+            });
+            if (eventsOnDay.length === 0) return null;
+            const total = eventsOnDay.reduce((sum, event) => sum + (mapping[event[key]] || 0), 0);
+            return Number((total / eventsOnDay.length).toFixed(2));
+        });
+
+    const dailyEnergy = computeDailySeries(energyMapping, 'energyConsumption');
+    const dailyCarbon = computeDailySeries(carbonMapping, 'carbonOffsetting');
+    const dailyTransport = computeDailySeries(transportMapping, 'transportationEmissions');
+
+    // Compute the most frequent city and venue type combination (displayed in the header)
+    const locationVenueCounts = eventsLast30.reduce((acc, event) => {
+        const key = `${event.eventLocation} (${event.venueType})`.toUpperCase();
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+    }, {});
+    const mostFrequentLocationVenue =
+        Object.keys(locationVenueCounts).reduce(
+            (a, b) => (locationVenueCounts[a] > locationVenueCounts[b] ? a : b),
+            'N/A'
+        );
 
     const colorPalette = [
         theme.palette.primary.light,
@@ -55,22 +97,15 @@ export default function SessionsChart() {
                 <Typography component="h2" variant="subtitle2" gutterBottom>
                     Sessions
                 </Typography>
-                <Stack sx={{ justifyContent: 'space-between' }}>
-                    <Stack
-                        direction="row"
-                        sx={{
-                            alignContent: { xs: 'center', sm: 'flex-start' },
-                            alignItems: 'center',
-                            gap: 1,
-                        }}
-                    >
+                <Stack sx={{ justifyContent: 'space-between', mb: 2 }}>
+                    <Stack direction="row" sx={{ alignItems: 'center', gap: 1 }}>
                         <Typography variant="h4" component="p">
-                            13,277
+                            {mostFrequentLocationVenue}
                         </Typography>
-                        <Chip size="small" color="success" label="+35%" />
+                        <Chip size="small" color="success" label="Last 30 days" />
                     </Stack>
                     <Typography variant="caption" sx={{ color: 'text.secondary' }}>
-                        Sessions per day for the last 30 days
+                        Energy Consumption, Carbon Offsetting &amp; Transportation Emissions
                     </Typography>
                 </Stack>
                 <LineChart
@@ -78,79 +113,70 @@ export default function SessionsChart() {
                     xAxis={[
                         {
                             scaleType: 'point',
-                            data,
+                            data: labels,
                             tickInterval: (index, i) => (i + 1) % 5 === 0,
                         },
                     ]}
                     series={[
                         {
-                            id: 'direct',
-                            label: 'Direct',
+                            id: 'energy',
+                            label: 'Energy Consumption',
                             showMark: false,
                             curve: 'linear',
-                            stack: 'total',
                             area: true,
+                            stack: 'total',
                             stackOrder: 'ascending',
-                            data: [
-                                300, 900, 600, 1200, 1500, 1800, 2400, 2100, 2700, 3000, 1800, 3300,
-                                3600, 3900, 4200, 4500, 3900, 4800, 5100, 5400, 4800, 5700, 6000,
-                                6300, 6600, 6900, 7200, 7500, 7800, 8100,
-                            ],
+                            data: dailyEnergy,
                         },
                         {
-                            id: 'referral',
-                            label: 'Referral',
+                            id: 'carbon',
+                            label: 'Carbon Offsetting',
                             showMark: false,
                             curve: 'linear',
-                            stack: 'total',
                             area: true,
+                            stack: 'total',
                             stackOrder: 'ascending',
-                            data: [
-                                500, 900, 700, 1400, 1100, 1700, 2300, 2000, 2600, 2900, 2300, 3200,
-                                3500, 3800, 4100, 4400, 2900, 4700, 5000, 5300, 5600, 5900, 6200,
-                                6500, 5600, 6800, 7100, 7400, 7700, 8000,
-                            ],
+                            data: dailyCarbon,
                         },
                         {
-                            id: 'organic',
-                            label: 'Organic',
+                            id: 'transport',
+                            label: 'Transportation Emissions',
                             showMark: false,
                             curve: 'linear',
+                            area: true,
                             stack: 'total',
                             stackOrder: 'ascending',
-                            data: [
-                                1000, 1500, 1200, 1700, 1300, 2000, 2400, 2200, 2600, 2800, 2500,
-                                3000, 3400, 3700, 3200, 3900, 4100, 3500, 4300, 4500, 4000, 4700,
-                                5000, 5200, 4800, 5400, 5600, 5900, 6100, 6300,
-                            ],
-                            area: true,
+                            data: dailyTransport,
                         },
                     ]}
                     height={250}
                     margin={{ left: 50, right: 20, top: 20, bottom: 20 }}
                     grid={{ horizontal: true }}
                     sx={{
-                        '& .MuiAreaElement-series-organic': {
-                            fill: "url('#organic')",
-                        },
-                        '& .MuiAreaElement-series-referral': {
-                            fill: "url('#referral')",
-                        },
-                        '& .MuiAreaElement-series-direct': {
-                            fill: "url('#direct')",
-                        },
+                        '& .MuiAreaElement-series-energy': { fill: "url('#energy')" },
+                        '& .MuiAreaElement-series-carbon': { fill: "url('#carbon')" },
+                        '& .MuiAreaElement-series-transport': { fill: "url('#transport')" },
                     }}
-                    slotProps={{
-                        legend: {
-                            hidden: true,
-                        },
-                    }}
+                    slotProps={{ legend: { hidden: true } }}
                 >
-                    <AreaGradient color={theme.palette.primary.dark} id="organic" />
-                    <AreaGradient color={theme.palette.primary.main} id="referral" />
-                    <AreaGradient color={theme.palette.primary.light} id="direct" />
+                    <AreaGradient color={theme.palette.primary.dark} id="energy" />
+                    <AreaGradient color={theme.palette.primary.main} id="carbon" />
+                    <AreaGradient color={theme.palette.primary.light} id="transport" />
                 </LineChart>
             </CardContent>
         </Card>
     );
 }
+
+SessionsChart.propTypes = {
+    events: PropTypes.arrayOf(
+        PropTypes.shape({
+            eventDate: PropTypes.string.isRequired,
+            eventLocation: PropTypes.string.isRequired,
+            venueType: PropTypes.string.isRequired,
+            energyConsumption: PropTypes.string.isRequired,
+            carbonOffsetting: PropTypes.string.isRequired,
+            transportationEmissions: PropTypes.string.isRequired,
+        })
+    ),
+};

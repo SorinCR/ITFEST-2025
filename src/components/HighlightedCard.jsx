@@ -10,7 +10,7 @@ import CalculateSustainabilityScoreDialog from './CalculateSustainabilityScoreDi
 import EventAIDescriptionDialog from './EventAIDescriptionDialog';
 import EventAIURLDialog from './EventAIURLDialog';
 
-export default function ButtonsContainer({userData}) {
+export default function ButtonsContainer({ userData }) {
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
     const [openScoreDialog, setOpenScoreDialog] = useState(false);
@@ -19,17 +19,22 @@ export default function ButtonsContainer({userData}) {
     const [extractedData, setExtractedData] = useState({});
 
     const handleExtract = (extractedData) => {
-        // console.log('Extracted Data:', extractedData);
+        // Convert any "Not specified" values to null
         const updatedData = Object.fromEntries(
             Object.entries(extractedData).map(([key, value]) => [key, value === 'Not specified' ? null : value])
         );
         setExtractedData(updatedData);
         setOpenScoreDialog(true);
-        // Handle the extracted data as needed.
     };
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box
+            sx={{
+                width: '100%',
+                fontFamily: "'Inter', Roboto, Helvetica, Arial, sans-serif", // Apply the same font globally
+            }}
+
+        >
             <Grid container direction="column" spacing={2}>
                 <Grid item xs={12}>
                     <Button
@@ -40,81 +45,89 @@ export default function ButtonsContainer({userData}) {
                         sx={{
                             height: '53.33333333333333px', // Updated height for the first button
                             textTransform: 'none',
-                            fontSize: '1.25rem'
+                            fontSize: '1.25rem',
                         }}
                     >
-                        <span role="img" aria-label="chart" style={{ marginRight: '8px' }}>
-                            ♻
-                        </span>
+            <span role="img" aria-label="chart" style={{ marginRight: '8px' }}>
+              ♻
+            </span>
                         Calculate Sustainability Score
                     </Button>
                 </Grid>
                 <Grid item xs={12}>
-                    {userData.plan == 1 ? <Button
-                        variant="outlined"
-                        color="primary"
-                        fullWidth
-                        onClick={() => setOpenAIDialog(true)}
-                        sx={{
-                            height: '53.33333333333333px', // Updated height for the second button
-                            textTransform: 'none',
-                            fontSize: '1.25rem'
-                        }}
-                    >
-                        <span role="img" aria-label="robot" style={{ marginRight: '8px' }}>
-                            ✨
-                        </span>
-                        AI Event Description Parser
-                    </Button>: <Button
-                        variant="outlined"
-                        color="primary"
-                        disabled
-                        fullWidth
-                        sx={{
-                            height: '53.33333333333333px', // Updated height for the second button
-                            textTransform: 'none',
-                            fontSize: '1.25rem'
-                        }}
-                    >
-                        <span role="img" aria-label="robot" style={{ marginRight: '8px' }}>
-                            ✨
-                        </span>
-                        AI Event Description Parser
-                    </Button>}
+                    {userData.plan === 1 ? (
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            fullWidth
+                            onClick={() => setOpenAIDialog(true)}
+                            sx={{
+                                height: '53.33333333333333px',
+                                textTransform: 'none',
+                                fontSize: '1.25rem',
+                            }}
+                        >
+              <span role="img" aria-label="robot" style={{ marginRight: '8px' }}>
+                ✨
+              </span>
+                            AI Event Description Parser
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            disabled
+                            fullWidth
+                            sx={{
+                                height: '53.33333333333333px',
+                                textTransform: 'none',
+                                fontSize: '1.25rem',
+                            }}
+                        >
+              <span role="img" aria-label="robot" style={{ marginRight: '8px' }}>
+                ✨
+              </span>
+                            AI Event Description Parser
+                        </Button>
+                    )}
                 </Grid>
                 <Grid item xs={12}>
-                    {userData.plan == 1 ? <Button
-                        variant="outlined"
-                        color="primary"
-                        fullWidth
-                        onClick={() => setOpenAIurlDialog(true)}
-                        sx={{
-                            height: '53.33333333333333px', // Updated height for the second button
-                            textTransform: 'none',
-                            fontSize: '1.25rem'
-                        }}
-                    >
-                        <span role="img" aria-label="robot" style={{ marginRight: '8px' }}>
-                            🔗
-                        </span>
-                        AI URL Parser
-                    </Button> : <Button
-                        variant="outlined"
-                        color="primary"
-                        fullWidth
-                        disabled
-                        title="Upgrade to Enterprise Plan to use this feature"
-                        sx={{
-                            height: '53.33333333333333px', // Updated height for the second button
-                            textTransform: 'none',
-                            fontSize: '1.25rem'
-                        }}
-                    >
-                        <span role="img" aria-label="robot" style={{ marginRight: '8px' }}>
-                            🔗
-                        </span>
-                        AI URL Parser
-                    </Button>}
+                    {userData.plan === 1 ? (
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            fullWidth
+                            onClick={() => setOpenAIurlDialog(true)}
+                            sx={{
+                                height: '53.33333333333333px',
+                                textTransform: 'none',
+                                fontSize: '1.25rem',
+                            }}
+                        >
+              <span role="img" aria-label="robot" style={{ marginRight: '8px' }}>
+                🔗
+              </span>
+                            AI URL Parser
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="outlined"
+                            color="primary"
+                            fullWidth
+                            disabled
+                            title="Upgrade to Enterprise Plan to use this feature"
+                            sx={{
+                                height: '53.33333333333333px',
+                                textTransform: 'none',
+                                fontSize: '1.25rem',
+                            }}
+                        >
+              <span role="img" aria-label="robot" style={{ marginRight: '8px' }}>
+                🔗
+              </span>
+                            AI URL Parser
+                        </Button>
+                    )}
                 </Grid>
             </Grid>
 
@@ -133,7 +146,6 @@ export default function ButtonsContainer({userData}) {
                 onClose={() => setOpenAIDialog(false)}
                 onExtract={handleExtract}
             />
-            
         </Box>
     );
 }

@@ -99,7 +99,7 @@ export default function Dashboard(props) {
                         }}
                     >
                         <Header />
-                        <MainGrid userData={userData}/>
+                        <MainGrid userData={userData} events={events}/>
                     </Stack>
                 </Box></>: <></>}
                 {page == "events" ? <><Box

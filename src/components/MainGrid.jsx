@@ -12,40 +12,113 @@ import PageViewsBarChart from './PageViewsBarChart';
 import SessionsChart from './SessionsChart';
 import StatCard from './StatCard';
 
-const data = [
-    {
-        title: 'Users',
-        value: '14k',
-        interval: 'Last 30 days',
-        trend: 'up',
-        data: [
-            200, 24, 220, 260, 240, 380, 100, 240, 280, 240, 300, 340, 320, 360, 340, 380,
-            360, 400, 380, 420, 400, 640, 340, 460, 440, 480, 460, 600, 880, 920,
-        ],
-    },
-    {
-        title: 'Conversions',
-        value: '325',
-        interval: 'Last 30 days',
-        trend: 'down',
-        data: [
-            1640, 1250, 970, 1130, 1050, 900, 720, 1080, 900, 450, 920, 820, 840, 600, 820,
-            780, 800, 760, 380, 740, 660, 620, 840, 500, 520, 480, 400, 360, 300, 220,
-        ],
-    },
-    {
-        title: 'Event count',
-        value: '200k',
-        interval: 'Last 30 days',
-        trend: 'neutral',
-        data: [
-            500, 400, 510, 530, 520, 600, 530, 520, 510, 730, 520, 510, 530, 620, 510, 530,
-            520, 410, 530, 520, 610, 530, 520, 610, 530, 420, 510, 430, 520, 510,
-        ],
-    },
-];
+export default function MainGrid({ userData, events }) {
+    // Define date range: last 30 days (including today)
+    const now = new Date();
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(now.getDate() - 30);
 
-export default function MainGrid({userData}) {
+    // Filter events from the last 30 days only
+    const eventsLast30 = events.filter(event => {
+        const eventDate = new Date(event.eventDate);
+        return eventDate >= thirtyDaysAgo && eventDate <= now;
+    });
+
+    // Total number of events in last 30 days
+    const totalEvents = eventsLast30.length;
+
+    // Helper: Generate an array of last 30 days labels (e.g. "Apr 5")
+    const getLast30DaysLabels = () => {
+        const labels = [];
+        for (let i = 29; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        }
+        return labels;
+    };
+
+    const labels = getLast30DaysLabels();
+
+    // Compute daily counts for all events (for the "Number of events" card)
+    const dailyEventCounts = labels.map(label =>
+        eventsLast30.filter(event => {
+            const d = new Date(event.eventDate);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === label;
+        }).length
+    );
+
+    // Determine the most frequent event location & venue type combination (in uppercase)
+    const locationVenueCounts = eventsLast30.reduce((acc, event) => {
+        const key = `${event.eventLocation} ${event.venueType}`.toUpperCase();
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+    }, {});
+    const mostFrequentLocationVenue = Object.keys(locationVenueCounts).reduce(
+        (a, b) => (locationVenueCounts[a] > locationVenueCounts[b] ? a : b),
+        'N/A'
+    );
+
+    // Compute daily counts for events matching the most frequent city & venue combination
+    const dailyLocationVenueCounts = labels.map(label =>
+        eventsLast30.filter(event => {
+            const d = new Date(event.eventDate);
+            const key = `${event.eventLocation} ${event.venueType}`.toUpperCase();
+            return (
+                d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === label &&
+                key === mostFrequentLocationVenue
+            );
+        }).length
+    );
+
+    // Compute daily average sustainability factor (for the trend card)
+    const dailySustainabilityTrend = labels.map(label => {
+        const eventsOnDay = eventsLast30.filter(event => {
+            const d = new Date(event.eventDate);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) === label;
+        });
+        console.log(eventsLast30)
+        if (eventsOnDay.length === 0) return null;
+        const total = eventsOnDay.reduce((sum, event) => sum + event.sustainabilityFactor, 0);
+        return Number((total / eventsOnDay.length).toFixed(1));
+
+    });
+
+    // Compute overall average sustainability factor for the period
+    const sustainabilityValue =
+        eventsLast30.length > 0
+            ? Number(
+                (
+                    eventsLast30.reduce((sum, event) => sum + event.sustainabilityFactor, 0) /
+                    eventsLast30.length
+                ).toFixed(1)
+            )
+            : '-';
+
+    // Prepare data for each StatCard
+    const statCardsData = [
+        {
+            title: 'Number of events',
+            value: totalEvents,
+            interval: 'Last 30 days',
+            trend: 'up',
+            data: dailyEventCounts,
+        },
+        {
+            title: 'Most frequent event location',
+            value: mostFrequentLocationVenue,
+            interval: 'Last 30 days',
+            trend: 'down',
+            data: dailyLocationVenueCounts,
+        },
+        {
+            title: 'Trend regarding sustainability factor',
+            value: sustainabilityValue,
+            interval: 'Last 30 days',
+            trend: 'neutral',
+            data: dailySustainabilityTrend,
+        },
+    ];
 
     return (
         <Box sx={{ width: '100%', maxWidth: { sm: '100%', md: '1700px' }, textAlign: 'left' }}>
@@ -53,22 +126,18 @@ export default function MainGrid({userData}) {
             <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
                 Overview
             </Typography>
-            <Grid
-                container
-                spacing={2}
-                columns={12}
-                sx={{ mb: (theme) => theme.spacing(2) }}
-            >
-                {data.map((card, index) => (
+            <Grid container spacing={2} columns={12} sx={{ mb: theme => theme.spacing(2) }}>
+                {statCardsData.map((card, index) => (
                     <Grid key={index} size={{ xs: 12, sm: 6, lg: 3 }}>
                         <StatCard {...card} />
                     </Grid>
                 ))}
                 <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
-                    <HighlightedCard userData={userData}/>
+                    <HighlightedCard userData={userData} />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
-                    <SessionsChart />
+                    {/* Pass the filtered events to the SessionsChart component */}
+                    <SessionsChart events={eventsLast30} />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
                     <PageViewsBarChart />
@@ -76,12 +145,7 @@ export default function MainGrid({userData}) {
             </Grid>
 
             {/* Details section */}
-            <Grid
-                container
-                spacing={2}
-                columns={12}
-                sx={{ justifyContent: 'flex-start' }} // Ensures left alignment
-            >
+            <Grid container spacing={2} columns={12} sx={{ justifyContent: 'flex-start' }}>
                 <Grid size={{ xs: 12, lg: 9 }}>
                     <CustomizedDataGrid />
                 </Grid>
