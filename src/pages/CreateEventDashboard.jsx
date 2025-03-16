@@ -26,6 +26,7 @@ const xThemeComponents = {
 export default function Dashboard(props) {
 
     const [userData, setUserData] = React.useState({});
+    const [page, setPage] = React.useState("home");
 
     React.useEffect(() => {
         if(!localStorage.getItem("token")) {
@@ -56,10 +57,11 @@ export default function Dashboard(props) {
         <AppTheme {...props} themeComponents={xThemeComponents}>
             <CssBaseline enableColorScheme />
             <Box sx={{ display: 'flex' }}>
-                <SideMenu userData={userData}/>
+                <SideMenu userData={userData} setPage={setPage}/>
                 <AppNavbar />
+                
                 {/* Main content */}
-                <Box
+                {page == "home" ? <><Box
                     component="main"
                     sx={{
                         flexGrow: 1,
@@ -80,7 +82,29 @@ export default function Dashboard(props) {
                         <Header />
                         <MainGrid userData={userData}/>
                     </Stack>
-                </Box>
+                </Box></>: <></>}
+                {page == "events" ? <><Box
+                    component="main"
+                    sx={{
+                        flexGrow: 1,
+                        backgroundColor: "rgba(200, 230, 201, 0.2)", // Even more faded green
+                        overflow: 'auto',
+                    }}
+                >
+
+                    <Stack
+                        spacing={2}
+                        sx={{
+                            alignItems: 'center',
+                            mx: 3,
+                            pb: 5,
+                            mt: { xs: 8, md: 0 },
+                        }}
+                    >
+                        {/* <Header /> */}
+                        {/* <MainGrid userData={userData}/> */}
+                    </Stack>
+                </Box></> : <></>}
             </Box>
         </AppTheme>
     );

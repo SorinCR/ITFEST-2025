@@ -24,7 +24,7 @@ const Drawer = styled(MuiDrawer)({
     },
 });
 
-export default function SideMenu({ userData }) {
+export default function SideMenu({ userData, setPage }) {
     console.log(userData);
     return (
         <Drawer
@@ -56,7 +56,7 @@ export default function SideMenu({ userData }) {
                     flexDirection: 'column',
                 }}
             >
-                <MenuContent />
+                <MenuContent setPage={setPage}/>
                 {userData.plan == 0 ? <CardAlert /> : <></>}
             </Box>
             <Stack

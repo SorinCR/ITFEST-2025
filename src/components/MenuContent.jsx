@@ -13,11 +13,7 @@ import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded';
 import HelpRoundedIcon from '@mui/icons-material/HelpRounded';
 
-const mainListItems = [
-    { text: 'Home', icon: <HomeRoundedIcon /> },
-    { text: 'Past events', icon: <AnalyticsRoundedIcon /> },
-    // { text: 'Team', icon: <PeopleRoundedIcon /> },
-];
+
 
 const secondaryListItems = [
     { text: 'Settings', icon: <SettingsRoundedIcon /> },
@@ -25,12 +21,19 @@ const secondaryListItems = [
     { text: 'Feedback', icon: <HelpRoundedIcon /> },
 ];
 
-export default function MenuContent() {
+export default function MenuContent({setPage}) {
+
+    const mainListItems = [
+        { text: 'Home', icon: <HomeRoundedIcon />, onClick: () => setPage("home") },
+        { text: 'Past events', icon: <AnalyticsRoundedIcon />, onClick: () => setPage("events") },
+        // { text: 'Team', icon: <PeopleRoundedIcon /> },
+    ];
+
     return (
         <Stack sx={{ flexGrow: 1, p: 1, justifyContent: 'space-between' }}>
             <List dense>
                 {mainListItems.map((item, index) => (
-                    <ListItem key={index} disablePadding sx={{ display: 'block' }}>
+                    <ListItem key={index} disablePadding sx={{ display: 'block' }} onClick={item.onClick}>
                         <ListItemButton selected={index === 0}>
                             <ListItemIcon>{item.icon}</ListItemIcon>
                             <ListItemText primary={item.text} />
