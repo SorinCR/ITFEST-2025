@@ -276,6 +276,31 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose, extractedData }) 
                 venueType: extractedData.venueType || "",
                 eventTiming: extractedData.eventTiming || "",
             });
+            setMetricInputs({
+                energyConsumption: { cluster: extractedData.energyConsumption || ""},
+                renewableEnergyUsage: { cluster: extractedData.renewableEnergyUsage || ""},
+                waterConsumption: { cluster: extractedData.waterConsumption || ""},
+                wasteDiversion: { cluster: extractedData.wasteDiversion || ""},
+                recyclingRate: { cluster: extractedData.recyclingRate || ""},
+                foodWaste: { cluster: extractedData.foodWaste || ""},
+                transportationEmissions: { cluster: extractedData.transportationEmissions || ""},
+                carbonOffsetting: { cluster: extractedData.carbonOffsetting || ""},
+                localSourcing: { cluster: extractedData.localSourcing || ""},
+                greenProcurement: { cluster: extractedData.greenProcurement || ""},
+            })
+            setEnvImpact({
+                energySource: extractedData.energySource || "", // Options: 100Renewable, mostlyRenewable, predominantlyConventional, dieselGenerators
+                energyEfficientPractices: extractedData.energyEfficientPractices || [], // Options: LED, SmartHVAC, EnergyManagement, NaturalLighting, None
+            })
+            setGovernanceData({
+                sustainabilityPolicy: extractedData.sustainabilityPolicy || "", // Options: fullyDocumented, informal, no
+                sustainabilityReporting: extractedData.sustainabilityReporting || "", // Options: yesFramework, adHoc, noReporting
+                vendorEvaluation: extractedData.vendorEvaluation || "", // Options: formalEvaluation, occasional, no
+                independentAudit: extractedData.independentAudit || "", // Options: yesAudit, planned, no
+                digitalPractices: extractedData.digitalPractices || "", // Options: entirelyDigital, mixed, primarilyPaper
+                dataCollection: extractedData.dataCollection || "", // Options: comprehensiveDigital, manualTracking, noData
+                performanceReviewFrequency: extractedData.performanceReviewFrequency || "", // Options: afterEveryEvent, periodically, rarely
+            })
         }
     }, [extractedData]);
 
@@ -294,33 +319,33 @@ const CalculateSustainabilityScoreDialog = ({ isOpen, onClose, extractedData }) 
 
     // Built‑in metric inputs state.
     const [metricInputs, setMetricInputs] = useState({
-        energyConsumption: { cluster: extractedData.energyConsumption || "" },
-        renewableEnergyUsage: { cluster: extractedData.renewableEnergyUsage || "" },
-        waterConsumption: { cluster: extractedData.waterConsumption || "" },
-        wasteDiversion: { cluster: extractedData.wasteDiversion || "" },
-        recyclingRate: { cluster: extractedData.recyclingRate || "" },
-        foodWaste: { cluster: extractedData.foodWaste || "" },
-        transportationEmissions: { cluster: extractedData.transportationEmissions || "" },
-        carbonOffsetting: { cluster: extractedData.carbonOffsetting || "" },
-        localSourcing: { cluster: extractedData.localSourcing || "" },
-        greenProcurement: { cluster: extractedData.greenProcurement || "" },
+        energyConsumption: { cluster: "" },
+        renewableEnergyUsage: { cluster: "" },
+        waterConsumption: { cluster: "" },
+        wasteDiversion: { cluster: "" },
+        recyclingRate: { cluster: "" },
+        foodWaste: { cluster: "" },
+        transportationEmissions: { cluster: "" },
+        carbonOffsetting: { cluster: "" },
+        localSourcing: { cluster: "" },
+        greenProcurement: { cluster: "" },
     });
 
     // Environmental Impact state.
     const [envImpact, setEnvImpact] = useState({
-        energySource: extractedData.energySource || "", // Options: 100Renewable, mostlyRenewable, predominantlyConventional, dieselGenerators
-        energyEfficientPractices: extractedData.energyEfficientPractices || [], // Options: LED, SmartHVAC, EnergyManagement, NaturalLighting, None
+        energySource: "", // Options: 100Renewable, mostlyRenewable, predominantlyConventional, dieselGenerators
+        energyEfficientPractices: [], // Options: LED, SmartHVAC, EnergyManagement, NaturalLighting, None
     });
 
     // Governance & Digital state.
     const [governanceData, setGovernanceData] = useState({
-        sustainabilityPolicy: extractedData.sustainabilityPolicy || "", // Options: fullyDocumented, informal, no
-        sustainabilityReporting: extractedData.sustainabilityReporting || "", // Options: yesFramework, adHoc, noReporting
-        vendorEvaluation: extractedData.vendorEvaluation || "", // Options: formalEvaluation, occasional, no
-        independentAudit: extractedData.independentAudit || "", // Options: yesAudit, planned, no
-        digitalPractices: extractedData.digitalPractices || "", // Options: entirelyDigital, mixed, primarilyPaper
-        dataCollection: extractedData.dataCollection || "", // Options: comprehensiveDigital, manualTracking, noData
-        performanceReviewFrequency: extractedData.performanceReviewFrequency || "", // Options: afterEveryEvent, periodically, rarely
+        sustainabilityPolicy: "", // Options: fullyDocumented, informal, no
+        sustainabilityReporting: "", // Options: yesFramework, adHoc, noReporting
+        vendorEvaluation: "", // Options: formalEvaluation, occasional, no
+        independentAudit: "", // Options: yesAudit, planned, no
+        digitalPractices: "", // Options: entirelyDigital, mixed, primarilyPaper
+        dataCollection: "", // Options: comprehensiveDigital, manualTracking, noData
+        performanceReviewFrequency: "", // Options: afterEveryEvent, periodically, rarely
     });
 
     // JSON state for storing only built‑in metrics’ allocated points.

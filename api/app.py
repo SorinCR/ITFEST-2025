@@ -209,7 +209,8 @@ def tokenLogin():
         return {"success": False}
 
     if user['email'] == data['email']:
-        return {"success": True, "user": user}
+        user = User.objects.get(email=data['email'])
+        return {"success": True, "user": {"accessToken": user['accessToken'], "fname": user['fname'], "lname": user["lname"], "email": user['email'], "userType": user['userType'], "company": user["company"], "plan": user['plan']}}
     else:
         return {"success": False}
 
