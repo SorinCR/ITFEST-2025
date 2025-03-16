@@ -156,7 +156,7 @@ export default function MainGrid({ userData, events }) {
                 <Grid size={{ xs: 12, lg: 3 }}>
                     <Stack gap={2} direction={{ xs: 'column', sm: 'row', lg: 'column' }}>
                         <CustomizedTreeView />
-                        <ChartUserByCountry />
+                        {/* <ChartUserByCountry /> */}
                     </Stack>
                 </Grid>
             </Grid>

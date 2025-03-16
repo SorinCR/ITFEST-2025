@@ -27,12 +27,12 @@ AreaGradient.propTypes = {
 export default function SessionsChart({ events }) {
     const theme = useTheme();
     // console.log(events);
-    // Create an array of last 30 days labels (e.g., "Apr 5")
+    // Create an array of last 30 days labels (e.g., "Mar 16")
     const getLast30DaysLabels = () => {
         const labels = [];
         const now = new Date();
         for (let i = 29; i >= 0; i--) {
-            const d = new Date();
+            const d = new Date(now);
             d.setDate(now.getDate() - i);
             labels.push(d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
         }

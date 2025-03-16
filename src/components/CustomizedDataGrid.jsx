@@ -58,14 +58,13 @@ export default function CustomDatePicker() {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <Box
                 sx={{
-                    p: 2,
-                    textAlign: 'center',
                 }}
             >
                 <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
                     Measuring impact, making events matter...🌱
                 </Typography>
             </Box>
+
         </LocalizationProvider>
     );
 }

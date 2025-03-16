@@ -8,7 +8,7 @@ import CardActionArea from '@mui/material/CardActionArea';
 export default function EventCard({event}) {
     console.log(event)
   return (
-    <Card sx={{ maxWidth: 500 }}>
+    <Card sx={{ maxWidth: 500 }} onClick={() => window.location.href = "/events/" + event.eventId}>
       <CardActionArea>
         <CardMedia
           component="img"

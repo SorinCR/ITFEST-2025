@@ -1,0 +1,10 @@
+@media (min-width: 900px) {
+    .css-gwg5vu-MuiPaper-root-MuiCard-root {
+        width: unset !important;
+    }
+
+}
+
+.css-83slop-MuiPaper-root-MuiCard-root {
+    height: 100%;
+}

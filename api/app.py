@@ -169,6 +169,12 @@ def get_events():
     events = Event.objects(eventId__in=user['events'])
     return {"events": events}    
 
+@app.route('/get_event', methods=['POST'])
+def get_event():
+    data = request.json
+    event = Event.objects.get(eventId=data['eventId'])
+    return {"event": event}
+
 @app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Headers',
