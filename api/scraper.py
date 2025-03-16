@@ -1,7 +1,5 @@
 import requests
 
-# scrape for 1 webpage
-
 def download_webpage(url, output_file):
     try:
         response = requests.get(url)
@@ -24,12 +22,9 @@ def text_webpage(url):
         print(f"Error downloading the webpage: {e}")
 
 
-# Example usage
+# if __name__=='__main__':
+#     url = "https://www.example.com"
+#     output_file = "webpage.txt"
 
 
-if __name__=='__main__':
-    url = "https://www.example.com"
-    output_file = "webpage.txt"
-
-
-    download_webpage(url, output_file)
+#     download_webpage(url, output_file)
